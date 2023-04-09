@@ -33,8 +33,8 @@
 
 ```bash
 $ cd ~/catkin_ws/src/
-$ git clone https://gitlab.com/TeamSOBITS/lightweight_human_pose_estimation.git
-$ cd lightweight_human_pose_estimation
+$ git clone https://gitlab.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch.git
+$ cd lightweight_human_pose_estimation_pytorch
 $ bash install.sh
 $ cd ~/catkin_ws/
 $ catkin_make 
