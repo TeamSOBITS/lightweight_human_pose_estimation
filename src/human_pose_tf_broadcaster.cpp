@@ -62,11 +62,7 @@ class Pose3D {
             pcl::fromROSMsg(*pcl_msg, cloud_src);
 
 			// Check if TF is working properly
-            // std::cout << base_frame_name_ << std::endl;
-            // std::cout << frame_id << std::endl;
-            // std::cout << frame_stamp << std::endl;
             bool key = tf_listener_.canTransform(base_frame_name_, frame_id, frame_stamp);
-            // bool key = tf_listener_.canTransform("/base_footprint", "/head_rgb_camera_link", frame_stamp);
             if (!key) {
                 ROS_ERROR("Human 3D Pose: PCL canTransform failed (base_frame and target frame related!)");
                 
@@ -339,9 +335,9 @@ class Pose3D {
     public:
         Pose3D() {
             // Default params
-            base_frame_name_ = "/base_footprint";
-            cloud_topic_name_ = "/points2";
-            // cloud_topic_name_ = "/camera/depth/points";
+            base_frame_name_ = "base_footprint";
+            // cloud_topic_name_ = "/points2";
+            cloud_topic_name_ = "/camera/depth/points";
             msg_topic_2d_ = "/human_pose_estimation/pose";
 
             // Get params from launcher

@@ -1,8 +1,7 @@
 <launch>
-        <node name="human_pose_tf_broadcaster" pkg="lightweight_human_pose_estimation" type="human_pose_tf_broadcaster" output="screen">
-            <!-- <param name="base_frame_name" value="base_link"/> -->
-            <param name="base_frame_name" value="/base_footprint"/>
-            <!-- <param name="base_frame_name" value="azure_camera_base"/> -->
+        <node name="human_pose_tf_broadcaster" pkg="lightweight_human_pose_estimation" type="human_pose_tf_broadcaster" respawn="false" output="screen">
+            <param name="base_frame_name" value="base_footprint"/>
+
             <param name="cloud_topic_name" value="/points2"/>
         </node>
 </launch>

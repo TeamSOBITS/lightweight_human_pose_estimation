@@ -186,4 +186,4 @@ if __name__ == '__main__':
     try:
         rospy.spin()
     finally:
-        cv2.destroyAllWindows()    
+        cv2.destroyAllWindows()
