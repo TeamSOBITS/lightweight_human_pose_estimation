@@ -21,7 +21,7 @@
         <li><a href="#事前設定">事前設定</a></li>
         <li><a href="#学習">学習</a></li>
         <li><a href="#検証">検証</a></li>
-        <li><a href="#pre-trained-model">Pre-trained model</a></li>
+        <li><a href="#学習済みモデル">学習済みモデル</a></li>
         <li><a href="#pythonデモ">Pythonデモ</a></li>
       </ul>
     </li>
@@ -202,7 +202,7 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 ### 2D Node
 |ノード名|意味|
 |---|---|
-|/demo2_node|LightWeight OpenPose 2Dのノード|
+|/human_pose_estimation/lightweight_human_pose_estimation|LightWeight OpenPose 2Dのノード|
 
 ### 2D Subscriptions
 |トピック名|型|意味|
@@ -246,7 +246,7 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 ### 3D Node
 |ノード名|意味|
 |---|---|
-|/human_pose_tf_broadcaster|LightWeight OpenPoseのノード|
+|/human_pose_tf_broadcaster|LightWeight OpenPose 3Dのノード|
 
 ### 3D Subscriptions
 |トピック名|型|意味|
