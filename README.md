@@ -2,6 +2,19 @@
 
 # Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose (ROS support) 
 
+<font color="Red">
+<details>
+<summary>OSSに向けた課題（あとで消す）</summary>
+
+#### できていないこと
+1. READMEの修正
+   - パラメータの説明部分を修正
+2. ソースコードの修正
+   - 使われていないパラメータを消す＆boolに変更
+   - 命名規則、コメントの確認 
+</details>
+</font>
+
 <details>
   <summary>目次</summary>
   <ol>
@@ -21,7 +34,7 @@
         <li><a href="#事前設定">事前設定</a></li>
         <li><a href="#学習">学習</a></li>
         <li><a href="#検証">検証</a></li>
-        <li><a href="#学習済みモデル">学習済みモデル</a></li>
+        <li><a href="#pre-trained-model">Pre-trained model</a></li>
         <li><a href="#pythonデモ">Pythonデモ</a></li>
       </ul>
     </li>
@@ -49,9 +62,8 @@
 </details>
 
 
-
 ## 概要
-論文 [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) の学習用コードが実装されたレポジトリをROS1に対応したforkレポジトリとなります。[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の手法を大幅に最適化し、CPU上で精度を落とさずにリアルタイム推論ができるようにしたものです。画像中にいる人物のポーズを特定するために、骨格（キーポイントとそれらの間の接続で構成される）を検出する。「耳、目、鼻、首、肩、肘、手首、腰、膝、足首」の最大18個の骨格のリアルタイムに推定できます。
+論文 [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) の学習用コードが実装されたレポジトリをROS1に対応したforkレポジトリとなります。[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の手法を大幅に最適化し、CPU上で精度を落とさずにリアルタイム推論ができるようにしたものです。画像中にいる人物のポーズを特定するために、骨格（キーポイントとそれらの間の接続で構成される）を検出する。「耳、目、鼻、首、肩、肘、手首、腰、膝、足首」の最大18個の骨格のリアルタイムに推定できます。またRGB-Dセンサを用いることで、2次元の骨格座標だけでなく、3次元の骨格座標を取得することができます。
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -175,8 +187,10 @@ $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --vid
 ```bash
 $ roslaunch lightweight_human_pose_estimation camera.launch
 ```
+<details>
+<summary>※カメラエラーの対策法</summary>
 
-※以下のようなエラーが発生した場合：
+以下のようなエラーが発生した場合：
 ```bash
 [ERROR] [1663911409.917317256]: Permission denied opening /dev/bus/usb/001/002
 ```
@@ -185,25 +199,34 @@ $ roslaunch lightweight_human_pose_estimation camera.launch
 ```bash
 $ sudo chmod o+w /dev/bus/usb/001/002
 ```
+</details>
 
-<details>
-<summary>2次元の骨格情報を取得したい場合</summary>
+<!-- <details>
+<summary>骨格情報を取得したい場合</summary> -->
 
 ### 2次元骨格検出起動
+```bash
+roslaunch lightweight_human_pose_estimation human_pose_estimation.launch
+```
+### 3次元骨格検出起動
 ```bash
 $ roslaunch lightweight_human_pose_estimation human_pose_estimation.launch
 ```
 
+```bash
+$ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
+```
 ### 2Dデモ実行
 ```bash
 $ roslaunch lightweight_human_pose_estimation demo.launch
 
 ```
-### 2D Node
-|ノード名|意味|
-|---|---|
-|/human_pose_estimation/lightweight_human_pose_estimation|LightWeight OpenPose 2Dのノード|
+### 3Dデモ実行
+今後：3d版を追加する
+<!-- ```bash
+$ roslaunch lightweight_human_pose_estimation demo.launch
 
+``` -->
 ### 2D Subscriptions
 |トピック名|型|意味|
 |---|---|---|
@@ -214,39 +237,6 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 |---|---|---|
 |/human_pose_estimation/pose|lightweight_human_pose_estimation/KeyPoints|2次元の骨格情報|
 |/human_pose_estimation/pose|sensor_msgs/Image|2次元の骨格画像|
-
-### 2D Parameters
-|パラメータ名|型|意味|
-|---|---|---|
-|/human_pose_estimation/lightweight_human_pose_estimation/checkpoint_path|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/cpu|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/needs_time_stamp|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_image_topic_name|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_img_show_flag|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_pub_result_image|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/smooth|string||
-|/human_pose_estimation/lightweight_human_pose_estimation/track|string||
-
-</details>
-
-<details>
-<summary>3次元の骨格情報を取得したい場合</summary>
-
-### 3次元骨格検出起動
-```bash
-$ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
-```
-
-### 3Dデモ実行
-今後：3d版を追加する
-<!-- ```bash
-$ roslaunch lightweight_human_pose_estimation demo.launch
-
-``` -->
-### 3D Node
-|ノード名|意味|
-|---|---|
-|/human_pose_tf_broadcaster|LightWeight OpenPose 3Dのノード|
 
 ### 3D Subscriptions
 |トピック名|型|意味|
@@ -260,14 +250,21 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 |---|---|---|
 |/lightweight_human_pose_estimation/human_pose_estimation/pose_3d|lightweight_human_pose_estimation/KeyPoints_3d|3次元の骨格情報|
 
-
-### 3D Parameters
+### Parameters
 |パラメータ名|型|意味|
 |---|---|---|
-|/human_pose_tf_broadcaster/base_frame_name|string|ロボットのベースフレーム名|
-|/human_pose_tf_broadcaster/cloud_topic_name|string|点群のトピック名|
-
-</details>
+|/human_pose_estimation/lightweight_human_pose_estimation/checkpoint_path|string|モデルのweightファイルのパス|
+|/human_pose_estimation/lightweight_human_pose_estimation/cpu|bool|CPUのみで骨格検出するか(CUDAを利用する場合：False)|
+|<font color="Red">（消す）/human_pose_estimation/lightweight_human_pose_estimation/needs_time_stamp|bool|使われていないパラメータ|
+</font>
+|/human_pose_estimation/lightweight_human_pose_estimation/pose_image_topic_name|string|センサ画像のトピック名|
+|/human_pose_estimation/lightweight_human_pose_estimation/pose_img_show_flag|bool|画像を表示するかのフラグ|
+|/human_pose_estimation/lightweight_human_pose_estimation/pose_pub_result_image|bool|骨格検出画像をパブリッシュするかのフラグ|
+|
+|<font color="Red">（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/smooth|int|前フレームとの骨格をスムーズ化するかのフラグ|
+</font>
+|<font color="Red">（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/track|int|前フレームの結果を伝播するかのフラグ|
+</font>
 
 ## 既知の問題点
 
