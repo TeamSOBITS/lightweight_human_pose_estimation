@@ -2,7 +2,6 @@
 
 # Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose (ROS support) 
 
-<font color="Red">
 <details>
 <summary>OSSに向けた課題（あとで消す）</summary>
 
@@ -13,7 +12,6 @@
    - 使われていないパラメータを消す＆boolに変更
    - 命名規則、コメントの確認 
 </details>
-</font>
 
 <details>
   <summary>目次</summary>
@@ -255,16 +253,12 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 |---|---|---|
 |/human_pose_estimation/lightweight_human_pose_estimation/checkpoint_path|string|モデルのweightファイルのパス|
 |/human_pose_estimation/lightweight_human_pose_estimation/cpu|bool|CPUのみで骨格検出するか(CUDAを利用する場合：False)|
-|<font color="Red">（消す）/human_pose_estimation/lightweight_human_pose_estimation/needs_time_stamp|bool|使われていないパラメータ|
-</font>
+|（消す）/human_pose_estimation/lightweight_human_pose_estimation/needs_time_stamp|bool|使われていないパラメータ|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_image_topic_name|string|センサ画像のトピック名|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_img_show_flag|bool|画像を表示するかのフラグ|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_pub_result_image|bool|骨格検出画像をパブリッシュするかのフラグ|
-|
-|<font color="Red">（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/smooth|int|前フレームとの骨格をスムーズ化するかのフラグ|
-</font>
-|<font color="Red">（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/track|int|前フレームの結果を伝播するかのフラグ|
-</font>
+|（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/smooth|int|前フレームとの骨格をスムーズ化するかのフラグ|
+|（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/track|int|前フレームの結果を伝播するかのフラグ|
 
 ## 既知の問題点
 
