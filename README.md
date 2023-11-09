@@ -8,6 +8,7 @@
 #### できていないこと
 1. READMEの修正
    - パラメータの説明部分を修正
+   - カメラのlaunchをAzure Kinect, Realsenseを修正
 2. ソースコードの修正
    - 使われていないパラメータを消す＆boolに変更
    - 命名規則、コメントの確認 
@@ -181,7 +182,7 @@ $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --vid
 ## 実行・操作方法
 
 
-### カメラの起動
+### カメラの起動(Azure Kinect & Realsense版に修正)
 ```bash
 $ roslaunch lightweight_human_pose_estimation camera.launch
 ```
@@ -198,6 +199,7 @@ $ roslaunch lightweight_human_pose_estimation camera.launch
 $ sudo chmod o+w /dev/bus/usb/001/002
 ```
 </details>
+
 
 <!-- <details>
 <summary>骨格情報を取得したい場合</summary> -->
@@ -253,12 +255,11 @@ $ roslaunch lightweight_human_pose_estimation demo.launch
 |---|---|---|
 |/human_pose_estimation/lightweight_human_pose_estimation/checkpoint_path|string|モデルのweightファイルのパス|
 |/human_pose_estimation/lightweight_human_pose_estimation/cpu|bool|CPUのみで骨格検出するか(CUDAを利用する場合：False)|
-|（消す）/human_pose_estimation/lightweight_human_pose_estimation/needs_time_stamp|bool|使われていないパラメータ|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_image_topic_name|string|センサ画像のトピック名|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_img_show_flag|bool|画像を表示するかのフラグ|
 |/human_pose_estimation/lightweight_human_pose_estimation/pose_pub_result_image|bool|骨格検出画像をパブリッシュするかのフラグ|
-|（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/smooth|int|前フレームとの骨格をスムーズ化するかのフラグ|
-|（bool型に修正）/human_pose_estimation/lightweight_human_pose_estimation/track|int|前フレームの結果を伝播するかのフラグ|
+|/human_pose_estimation/lightweight_human_pose_estimation/smooth|bool|前フレームとの骨格をスムーズ化するかのフラグ|
+|/human_pose_estimation/lightweight_human_pose_estimation/track|bool|前フレームの結果を伝播するかのフラグ|
 
 ## 既知の問題点
 

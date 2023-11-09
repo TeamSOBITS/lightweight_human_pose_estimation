@@ -54,13 +54,11 @@ class Flame :
         # Get params from launch
         self.img_show_flag = rospy.get_param( rospy.get_name() + "/pose_img_show_flag", True )
         self.pub_result_flag = rospy.get_param( rospy.get_name() + "/pose_pub_result_image", True )
-        self.needs_time_stamp = rospy.get_param( rospy.get_name() +  "needs_time_stamp", True )
-
         self.checkpoint_path = rospy.get_param( rospy.get_name() + "/checkpoint_path", "checkpoints/checkpoint_iter_370000.pth")
         self.height_size = rospy.get_param( rospy.get_name() + "/height_size", 256)
         self.cpu = rospy.get_param( rospy.get_name() + "/cpu", True )
-        self.track = rospy.get_param( rospy.get_name() + "/track", 1 )
-        self.smooth = rospy.get_param( rospy.get_name() + "/smooth", 1 )
+        self.track = rospy.get_param( rospy.get_name() + "/track", True )
+        self.smooth = rospy.get_param( rospy.get_name() + "/smooth", True )
 
         self.net = PoseEstimationWithMobileNet()
         self.checkpoint = torch.load(self.checkpoint_path, map_location='cpu')
