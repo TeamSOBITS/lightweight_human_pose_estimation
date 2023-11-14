@@ -6,12 +6,8 @@
 <summary>OSSに向けた課題（あとで消す）</summary>
 
 #### できていないこと
-1. READMEの修正
-   - パラメータの説明部分を修正
-   - カメラのlaunchをAzure Kinect, Realsenseを修正
-2. ソースコードの修正
-   - 使われていないパラメータを消す＆boolに変更
-   - 命名規則、コメントの確認 
+1. ソースコードの修正
+   - 命名規則、コメントの最終確認 
 </details>
 
 <details>
@@ -33,7 +29,7 @@
         <li><a href="#事前設定">事前設定</a></li>
         <li><a href="#学習">学習</a></li>
         <li><a href="#検証">検証</a></li>
-        <li><a href="#pre-trained-model">Pre-trained model</a></li>
+        <li><a href="#学習済みモデル">学習済みモデル</a></li>
         <li><a href="#pythonデモ">Pythonデモ</a></li>
       </ul>
     </li>
@@ -42,17 +38,12 @@
       <ul>
         <li><a href="#カメラの起動">カメラの起動</a></li>
         <li><a href="#2次元骨格検出起動">2次元骨格検出起動</a></li>
-        <li><a href="#2dデモ実行">2Dデモ実行</a></li>
-        <li><a href="#2d-node">2D Node</a></li>
+        <li><a href="#3次元骨格検出起動">3次元骨格検出起動</a></li>
         <li><a href="#2d-subscriptions">2D Subscriptions</a></li>
         <li><a href="#2d-publications">2D Publications</a></li>
-        <li><a href="#2d-parameters">2D Parameters</a></li>
-        <li><a href="#3次元骨格検出起動">3次元骨格検出起動</a></li>
-        <li><a href="#3dデモ実行">3Dデモ実行</a></li>
-        <li><a href="#3d-node">3D Node</a></li>
         <li><a href="#3d-subscriptions">3D Subscriptions</a></li>
         <li><a href="#3d-publications">3D Publications</a></li>
-        <li><a href="#3d-parameters">3D Parameters</a></li>
+        <li><a href="#parameters">Parameters</a></li>
       </ul>
     </li>
     <li><a href="#既知の問題点">既知の問題点</a></li>
@@ -62,7 +53,7 @@
 
 
 ## 概要
-論文 [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) の学習用コードが実装されたレポジトリをROS1に対応したforkレポジトリとなります。[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の手法を大幅に最適化し、CPU上で精度を落とさずにリアルタイム推論ができるようにしたものです。画像中にいる人物のポーズを特定するために、骨格（キーポイントとそれらの間の接続で構成される）を検出する。「耳、目、鼻、首、肩、肘、手首、腰、膝、足首」の最大18個の骨格のリアルタイムに推定できます。またRGB-Dセンサを用いることで、2次元の骨格座標だけでなく、3次元の骨格座標を取得することができます。
+論文 [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) の学習用コードが実装されたレポジトリをROS1に対応したforkレポジトリとなります。[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の手法を大幅に最適化し、CPU上で精度を落とさずにリアルタイム推論ができるようにしたものです。画像中にいる人物のポーズを特定するために、骨格（キーポイントとそれらの間の接続で構成される）を検出する。「耳、目、鼻、首、肩、肘、手首、腰、膝、足首」の最大18個の骨格のリアルタイムに推定できます。またRGB-Dセンサの点群情報を用いて、2次元の骨格座標だけでなく、3次元の骨格座標を取得することができます。
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
@@ -182,12 +173,13 @@ $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --vid
 ## 実行・操作方法
 
 
-### カメラの起動(Azure Kinect & Realsense版に修正)
+### カメラの起動
+USBカメラ(PC内蔵カメラ)を利用する場合
 ```bash
-$ roslaunch lightweight_human_pose_estimation camera.launch
+roslaunch lightweight_human_pose_estimation camera.launch
 ```
 <details>
-<summary>※カメラエラーの対策法</summary>
+<summary>※USBカメラエラーの対策法</summary>
 
 以下のようなエラーが発生した場合：
 ```bash
@@ -201,8 +193,8 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 </details>
 
 
-<!-- <details>
-<summary>骨格情報を取得したい場合</summary> -->
+[Azure Kinectを利用する場合](https://github.com/TeamSOBITS/azure_kinect_ros_driver) 
+[RealSenseを利用する場合](https://github.com/TeamSOBITS/realsense_ros) 
 
 ### 2次元骨格検出起動
 ```bash
@@ -210,23 +202,9 @@ roslaunch lightweight_human_pose_estimation human_pose_estimation.launch
 ```
 ### 3次元骨格検出起動
 ```bash
-$ roslaunch lightweight_human_pose_estimation human_pose_estimation.launch
-```
-
-```bash
 $ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
 ```
-### 2Dデモ実行
-```bash
-$ roslaunch lightweight_human_pose_estimation demo.launch
 
-```
-### 3Dデモ実行
-今後：3d版を追加する
-<!-- ```bash
-$ roslaunch lightweight_human_pose_estimation demo.launch
-
-``` -->
 ### 2D Subscriptions
 |トピック名|型|意味|
 |---|---|---|
