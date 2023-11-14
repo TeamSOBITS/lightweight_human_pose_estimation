@@ -34,7 +34,7 @@
       </ul>
     </li>
     <li>
-      <a href="#実行・操作方法">実行・操作方法</a>
+      <a href="#実行方法">実行方法</a>
       <ul>
         <li><a href="#カメラの起動">カメラの起動</a></li>
         <li><a href="#2次元骨格検出起動">2次元骨格検出起動</a></li>
@@ -170,7 +170,7 @@ $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --vid
 </details>
 
 
-## 実行・操作方法
+## 実行方法
 
 
 ### カメラの起動
