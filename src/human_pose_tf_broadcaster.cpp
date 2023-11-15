@@ -38,6 +38,7 @@ typedef message_filters::sync_policies::ApproximateTime<lightweight_human_pose_e
 class Pose3D {
     private:
         ros::NodeHandle       nh_;
+        // FIXME：tf2に変更
         tf::TransformListener tf_listener_;
         std::string           base_frame_name_;
         std::string           cloud_topic_name_;
@@ -61,6 +62,7 @@ class Pose3D {
 			// Transform ROS cloud to PCL
             pcl::fromROSMsg(*pcl_msg, cloud_src);
 
+            // FIXME：tf2に変更
 			// Check if TF is working properly
             bool key = tf_listener_.canTransform(base_frame_name_, frame_id, frame_stamp);
             if (!key) {
@@ -71,7 +73,8 @@ class Pose3D {
             // else{
             //     ROS_INFO("TF can be transformed");
             // }
-
+            
+            // FIXME：tf2に変更
 			// Copy Point Cloud to 'cloud_transformed_'
             if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_listener_)) {
                 ROS_ERROR("PointCloud could not be transformed");
@@ -93,7 +96,6 @@ class Pose3D {
 
             // Human ID
             int i_h = 0;
-            // TODO: start here the loop for multiple humans
             for (int i_h = 0; i_h < keypoints_2d.key_point.size(); i_h++) {
                 // for (int i_b = 0; i_b < 18; i_b++) {
                 for (std::string body_part : body_part_list) {
@@ -195,7 +197,7 @@ class Pose3D {
                     }
 
                     // Get the 3D Pose(x,y,z) from each 2D Pose(x,y) body part by refering to the Point Cloud
-                    // TODO: change 640 to the proper size of the camera (launcher? automatic?)
+                    // change 640 to the proper size of the camera
                     PointT element_xyz = cloud_transformed_->points[pt_y * 1280 + pt_x];
                     if (std::isnan(element_xyz.x) || std::isnan(element_xyz.y) || std::isnan(element_xyz.z)) {
                         continue;
@@ -325,7 +327,6 @@ class Pose3D {
                 keypoint_3d.c_class = keypoints_2d.key_point[i_h].c_class;
                 keypoints_3d.key_point_3d.push_back(keypoint_3d);
 
-            // TODO: end here the loop for multiple humans
             }
 
             // Publish the msg
