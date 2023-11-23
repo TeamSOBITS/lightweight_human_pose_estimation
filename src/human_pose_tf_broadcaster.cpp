@@ -25,7 +25,13 @@
 // #include <pcl_ros/point_cloud.h>
 #include <pcl_ros/transforms.h>
 
-#include <tf/transform_listener.h>
+// FIXME
+// #include <tf/transform_listener.h>
+
+#include <tf2_ros/buffer.h>
+// #include <tf2_ros/transform_listener.h>
+
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include <iostream>
 #include <unordered_map>
@@ -39,7 +45,11 @@ class Pose3D {
     private:
         ros::NodeHandle       nh_;
         // FIXME：tf2に変更
-        tf::TransformListener tf_listener_;
+        // tf::TransformListener tf_listener_;
+        tf2_ros::Buffer tf_buffer;
+        // tf2_ros::TransformListener tfl(buffer);
+        // tf2_ros::TransformListener tfl;
+
         std::string           base_frame_name_;
         std::string           cloud_topic_name_;
         std::string           msg_topic_2d_;
@@ -64,10 +74,17 @@ class Pose3D {
 
             // FIXME：tf2に変更
 			// Check if TF is working properly
-            bool key = tf_listener_.canTransform(base_frame_name_, frame_id, frame_stamp);
+            // bool key = tf_listener_.canTransform(base_frame_name_, frame_id, frame_stamp);
+            // if (!key) {
+            //     ROS_ERROR("Human 3D Pose: PCL canTransform failed (base_frame and target frame related!)");
+                
+            //     return;
+            // }
+
+            bool key = tf_buffer.canTransform(base_frame_name_, frame_id, frame_stamp);
+            // bool key = buffer.canTransform(frame_id, base_frame_name_, frame_stamp);
             if (!key) {
                 ROS_ERROR("Human 3D Pose: PCL canTransform failed (base_frame and target frame related!)");
-                
                 return;
             }
             // else{
@@ -76,9 +93,14 @@ class Pose3D {
             
             // FIXME：tf2に変更
 			// Copy Point Cloud to 'cloud_transformed_'
-            if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_listener_)) {
-                ROS_ERROR("PointCloud could not be transformed");
+            // if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_listener_)) {
+            //     ROS_ERROR("PointCloud could not be transformed");
 
+            //     return;
+            // }
+
+            if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_buffer)) {
+                ROS_ERROR("PointCloud could not be transformed");
                 return;
             }
 

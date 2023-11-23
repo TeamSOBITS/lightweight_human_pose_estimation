@@ -15,8 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   pcl_ros
   message_filters
-  tf
-  sensor_msgs
+  tf2
+  tf2_ros
+  tf2_msgs
+  tf2_sensor_msgs
   roscpp
   rospy
   std_msgs
