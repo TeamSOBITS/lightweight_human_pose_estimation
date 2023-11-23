@@ -49,7 +49,7 @@
   <depend>message_filters</depend>
   <depend>pcl_conversions</depend>
   <depend>pcl_ros</depend>
-  <depend>tf</depend>
+  <depend>tf2</depend>
   <depend>tf2_ros</depend>
 
   <!-- The export tag contains other, unspecified, tags -->

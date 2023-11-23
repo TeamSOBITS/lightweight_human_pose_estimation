@@ -25,13 +25,7 @@
 // #include <pcl_ros/point_cloud.h>
 #include <pcl_ros/transforms.h>
 
-// FIXME
-// #include <tf/transform_listener.h>
-
-#include <tf2_ros/buffer.h>
-// #include <tf2_ros/transform_listener.h>
-
-// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/transform_listener.h>
 
 #include <iostream>
 #include <unordered_map>
@@ -44,11 +38,8 @@ typedef message_filters::sync_policies::ApproximateTime<lightweight_human_pose_e
 class Pose3D {
     private:
         ros::NodeHandle       nh_;
-        // FIXME：tf2に変更
-        // tf::TransformListener tf_listener_;
-        tf2_ros::Buffer tf_buffer;
-        // tf2_ros::TransformListener tfl(buffer);
-        // tf2_ros::TransformListener tfl;
+        tf2_ros::Buffer tfBuffer_;
+        tf2_ros::TransformListener tfListener_;
 
         std::string           base_frame_name_;
         std::string           cloud_topic_name_;
@@ -72,34 +63,14 @@ class Pose3D {
 			// Transform ROS cloud to PCL
             pcl::fromROSMsg(*pcl_msg, cloud_src);
 
-            // FIXME：tf2に変更
-			// Check if TF is working properly
-            // bool key = tf_listener_.canTransform(base_frame_name_, frame_id, frame_stamp);
-            // if (!key) {
-            //     ROS_ERROR("Human 3D Pose: PCL canTransform failed (base_frame and target frame related!)");
-                
-            //     return;
-            // }
-
-            bool key = tf_buffer.canTransform(base_frame_name_, frame_id, frame_stamp);
-            // bool key = buffer.canTransform(frame_id, base_frame_name_, frame_stamp);
-            if (!key) {
+            bool can_tf = tfBuffer_.canTransform(base_frame_name_, frame_id, frame_stamp);
+            if (!can_tf) {
                 ROS_ERROR("Human 3D Pose: PCL canTransform failed (base_frame and target frame related!)");
                 return;
             }
-            // else{
-            //     ROS_INFO("TF can be transformed");
-            // }
-            
-            // FIXME：tf2に変更
-			// Copy Point Cloud to 'cloud_transformed_'
-            // if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_listener_)) {
-            //     ROS_ERROR("PointCloud could not be transformed");
 
-            //     return;
-            // }
-
-            if (!pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tf_buffer)) {
+            bool is_tf_pcl = pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tfBuffer_);
+            if (!is_tf_pcl) {
                 ROS_ERROR("PointCloud could not be transformed");
                 return;
             }
@@ -108,7 +79,6 @@ class Pose3D {
             lightweight_human_pose_estimation::KeyPoints keypoints_2d = *keypoints_msg;
             if (keypoints_2d.key_point.size() == 0) {
                 ROS_ERROR("No human detected");
-
                 return;
             }
 
@@ -356,7 +326,9 @@ class Pose3D {
         }
 
     public:
-        Pose3D() {
+        
+        Pose3D() : tfBuffer_(), tfListener_(tfBuffer_) {
+
             // Default params
             base_frame_name_ = "base_footprint";
             // cloud_topic_name_ = "/points2";

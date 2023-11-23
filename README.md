@@ -3,15 +3,6 @@
 # Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose (ROS support) 
 
 <details>
-<summary>OSSに向けた課題（あとで消す）</summary>
-
-#### できていないこと
-1. ソースコードの修正
-   - 命名規則、コメントの最終確認 
-   - tfからtf2に変更(FIXME)
-</details>
-
-<details>
   <summary>目次</summary>
   <ol>
     <li>
