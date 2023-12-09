@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.10.2)
 project(lightweight_human_pose_estimation)
 
 ## Compile as C++14, supported in ROS Noetic and newer
