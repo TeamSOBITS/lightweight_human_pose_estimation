@@ -1,5 +1,14 @@
 <a name="readme-top"></a>
 
+
+[JA](README.md) | [EN](README.en.md)
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![License][license-shield]][license-url]
+
 # Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose (ROS support) 
 
 <details>
@@ -38,8 +47,8 @@
         <li><a href="#parameters">Parameters</a></li>
       </ul>
     </li>
-    <li><a href="#既知の問題点">既知の問題点</a></li>
-    <li><a href="#参考文献">参考文献</a></li>
+    <li><a href="#マイルストーン">マイルストーン</a></li>
+    <li><a href="#最後に">最後に</a></li>
   </ol>
 </details>
 
@@ -83,8 +92,8 @@ $ catkin_make
 
 ### 事前設定
 
-1. Download COCO 2017 dataset: [http://cocodataset.org/#download](http://cocodataset.org/#download) (train, val, annotations) and unpack it to `<COCO_HOME>` folder.
-2. Install requirements
+1. COCO2017データセットのダウンロード: [http://cocodataset.org/#download](http://cocodataset.org/#download) で(train, val, annotations) と `<COCO_HOME>` フォルダに解凍します。
+2. 必要なパッケージをインストール
 
 ```bash
 $ python3 -m pip install -r requirements.txt
@@ -92,55 +101,51 @@ $ python3 -m pip install -r requirements.txt
 
 ### 学習
 
-Training consists of 3 steps (given AP values for full validation dataset):
-* Training from MobileNet weights. Expected AP after this step is ~38%.
-* Training from weights, obtained from previous step. Expected AP after this step is ~39%.
-* Training from weights, obtained from previous step and increased number of refinement stages to 3 in network. Expected AP after this step is ~40% (for the network with 1 refinement stage, two next are discarded).
+トレーニングは3つのステップ（完全な検証データセットのAP値が与えられます）:
+* MobileNetの重みから学習。このステップ後の予想APは～38%。
+* 前のステップで得られた重みからのトレーニング。このステップ後に期待されるAPは～39%です。
+* 前のステップで得られた重みからのトレーニング。このステップ後の期待されるAPは～40%です（洗練段階が1のネットワークでは、次の2段階は破棄されます）。
 
-1. Download pre-trained MobileNet v1 weights `mobilenet_sgd_68.848.pth.tar` from: [https://github.com/marvis/pytorch-mobilenet](https://github.com/marvis/pytorch-mobilenet) (sgd option). If this doesn't work, download from [GoogleDrive](https://drive.google.com/file/d/18Ya27IAhILvBHqV_tDp0QjDFvsNNy-hv/view?usp=sharing).
+1. 学習済みのMobileNet v1 weightsを`mobilenet_sgd_68.848.pth.tar`からダウンロードします: [https://github.com/marvis/pytorch-mobilenet](https://github.com/marvis/pytorch-mobilenet) (sgd オプション). うまくいかない場合, [GoogleDrive](https://drive.google.com/file/d/18Ya27IAhILvBHqV_tDp0QjDFvsNNy-hv/view?usp=sharing)からダウンロードしてください。
 
-2. Convert train annotations in internal format. Run:
-
+<!-- 2. Convert train annotations in internal format. Run: -->
+2. train annotationsを内部形式に変換します。 以下を実行:
 ```bash
 $ python3 scripts/prepare_train_labels.py --labels <COCO_HOME>/annotations/person_keypoints_train2017.json
 ```
 
-It will produce `prepared_train_annotation.pkl` with converted in internal format annotations.
-
-   [OPTIONAL] For fast validation it is recommended to make *subset* of validation dataset. Run:
-
+prepared_train_annotation.pkl`が生成され、内部形式のannotationsに変換されます。
+   [オプション] 高速な検証のためには、検証データセットの*サブセット*を作成することを推奨します。以下を実行
 ```bash
 $ python3 scripts/make_val_subset.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json
 ```
+val_subset.json`が生成され、（5000枚のうち）ランダムな250枚の画像にannotationsが付加されます。
 
-It will produce `val_subset.json` with annotations just for 250 random images (out of 5000).
-
-3. To train from MobileNet weights, run:
+3. MobileNetのweightsからトレーニングするために、以下を実行:
 
 ```bash
 $ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/mobilenet_sgd_68.848.pth.tar --from-mobilenet
 ```
 
-4. Next, to train from checkpoint from previous step, run:
+4. 次に、前のステップのチェックポイントからトレーニングするために、以下を実行:
 
 ```bash
 $ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_420000.pth --weights-only
 ```
 
-5. Finally, to train from checkpoint from previous step and 3 refinement stages in network, run:
+5. 最後に、前ステップのチェックポイントと3段階のネットワークから学習するために、以下を実行：
 
 ```bash
 $ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_280000.pth --weights-only --num-refinement-stages 3
 ```
 
-We took checkpoint after 370000 iterations as the final one.
+370000回繰り返した後のチェックポイントを最終的なチェックポイントとしました。
 
-We did not perform the best checkpoint selection at any step, so similar result may be achieved after less number of iterations.
-
+どのステップでも最適なチェックポイントを選択したわけではないので、より少ない反復回数で同様の結果が得られる可能性があります。
 
 ### 検証
 
-1. Run:
+1. 以下を実行:
 
 ```bash
 $ python3 val.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json --images-folder <COCO_HOME>/val2017 --checkpoint-path <CHECKPOINT>
@@ -148,12 +153,13 @@ $ python3 val.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json 
 
 ### 学習済みモデル
 
-The model expects normalized image (mean=[128, 128, 128], scale=[1/256, 1/256, 1/256]) in planar BGR format.
-Pre-trained on COCO model is available at: https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth, it has 40% of AP on COCO validation set (38.6% of AP on the val *subset*).
+このモデルは、平面BGR形式の正規化画像（mean=[128, 128, 128]、scale=[1/256, 1/256, 1/256] ）を想定しています。
+
+COCOで事前に訓練されたモデルは、https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth、COCO検証セットで40％のAPを持っています（val *subset*では38.6％）。
 
 ### Pythonデモ
 
-We provide python demo just for the quick results preview. Please, consider c++ demo for the best performance. To run the python demo from a webcam:
+Pythonデモは、簡単な結果のプレビューのために提供しています。最高のパフォーマンスを得るには、c++デモをご検討ください。ウェブカメラからpythonデモを行うためには、以下を実行：
 
 ```bash
 $ cd script
@@ -231,37 +237,21 @@ $ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
 |/human_pose_estimation/lightweight_human_pose_estimation/smooth|bool|前フレームとの骨格をスムーズ化するかのフラグ|
 |/human_pose_estimation/lightweight_human_pose_estimation/track|bool|前フレームの結果を伝播するかのフラグ|
 
-## 既知の問題点
+<!-- マイルストーン -->
+## マイルストーン
 
-We observe this error with maximum number of open files (`ulimit -n`) equals to 1024:
+- [x] OSS
+    - [x] ドキュメンテーションの充実
+    - [x] コーディングスタイルの統一
 
-```
-  File "train.py", line 164, in <module>
-    args.log_after, args.val_labels, args.val_images_folder, args.val_output_name, args.checkpoint_after, args.val_after)
-  File "train.py", line 77, in train
-    for _, batch_data in enumerate(train_loader):
-  File "/<path>/python3.6/site-packages/torch/utils/data/dataloader.py", line 330, in __next__
-    idx, batch = self._get_batch()
-  File "/<path>/python3.6/site-packages/torch/utils/data/dataloader.py", line 309, in _get_batch
-    return self.data_queue.get()
-  File "/<path>/python3.6/multiprocessing/queues.py", line 337, in get
-    return _ForkingPickler.loads(res)
-  File "/<path>/python3.6/site-packages/torch/multiprocessing/reductions.py", line 151, in rebuild_storage_fd
-    fd = df.detach()
-  File "/<path>/python3.6/multiprocessing/resource_sharer.py", line 58, in detach
-    return reduction.recv_handle(conn)
-  File "/<path>/python3.6/multiprocessing/reduction.py", line 182, in recv_handle
-    return recvfds(s, 1)[0]
-  File "/<path>/python3.6/multiprocessing/reduction.py", line 161, in recvfds
-    len(ancdata))
-RuntimeError: received 0 items of ancdata
-```
+現時点のバグや新規機能の依頼を確認するために[Issueページ][license-url] をご覧ください．
 
-To get rid of it, increase the limit to bigger number, e.g. 65536, run in the terminal: `ulimit -n 65536`
+<!-- ## 参考文献
+* [Dynamixel SDK](https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/)
+* [ROS Noetic](http://wiki.ros.org/noetic)
+* [ROS Control](http://wiki.ros.org/ros_control) -->
 
-
-## 参考文献
-
+### 最後に
 If this helps your research, please cite the paper:
 
 ```
@@ -272,3 +262,15 @@ If this helps your research, please cite the paper:
     year = {2018}
 }
 ```
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/TeamSOBITS/lightweight_human_pose_estimation_pytorch.svg?style=for-the-badge
+[contributors-url]: https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/TeamSOBITS/lightweight_human_pose_estimation_pytorch.svg?style=for-the-badge
+[forks-url]: https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch/network/members
+[stars-shield]: https://img.shields.io/github/stars/TeamSOBITS/lightweight_human_pose_estimation_pytorch.svg?style=for-the-badge
+[stars-url]: https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch/stargazers
+[issues-shield]: https://img.shields.io/github/issues/TeamSOBITS/lightweight_human_pose_estimation_pytorch.svg?style=for-the-badge
+[issues-url]: https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch/issues
+[license-shield]: https://img.shields.io/github/license/TeamSOBITS/lightweight_human_pose_estimation_pytorch.svg?style=for-the-badge
+[license-url]: LICENSE
