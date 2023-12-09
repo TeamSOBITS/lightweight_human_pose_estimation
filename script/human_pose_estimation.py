@@ -1,15 +1,10 @@
 #! /usr/bin/env python3
 import rospy
 from geometry_msgs.msg import Point
-# import sensor_msgs.msg
 from sensor_msgs.msg import Image
-# from std_msgs.msg import Int32MultiArray, MultiArrayLayout, MultiArrayDimension
 from cv_bridge import CvBridge
-# from cv_bridge import CvBridge, CvBridgeError
 from lightweight_human_pose_estimation.msg import KeyPoint
 from lightweight_human_pose_estimation.msg import KeyPoints
-# import argparse
-# import sys
 
 import cv2
 import numpy as np
@@ -36,7 +31,6 @@ def infer_fast(net, img, net_input_height_size, stride, upsample_ratio, cpu,
     if not cpu:
         tensor_img = tensor_img.cuda()
 
-    # GPUはTrueのときはここに引っかかる`net(tensor_img)`
     stages_output = net(tensor_img)
 
     stage2_heatmaps = stages_output[-2]
@@ -86,7 +80,6 @@ class Flame :
 
 
     def img_cb(self, msg):
-        # 読み込んだ動画像の配列
         orig_img = img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
 
         heatmaps, pafs, scale, pad = infer_fast(self.net, img, self.height_size, self.stride, self.upsample_ratio, self.cpu)
@@ -120,7 +113,6 @@ class Flame :
             pose = Pose(pose_keypoints, pose_entries[n][18])
             current_poses.append(pose)
 
-            # print(pose_keypoints)
             pose_keypoints_list = pose_keypoints.tolist()
 
             vec = list(range(18*2))
