@@ -4,7 +4,7 @@ project(lightweight_human_pose_estimation)
 ## Compile as C++14, supported in ROS Noetic and newer
 add_compile_options(-std=c++14)
 
-find_package(OpenCV 4.6.0 REQUIRED PATHS "/opt/opencv/opencv_4.6.0/")
+find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
 
 
 ## Find catkin macros and libraries
@@ -23,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   sensor_msgs
   message_generation
+  sobits_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -62,10 +63,10 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    PoseFlame.msg
-   KeyPoint.msg
-   KeyPoint_3d.msg
-   KeyPoints.msg
-   KeyPoints_3d.msg
+   KeyPoint2D.msg
+   KeyPoint3D.msg
+   KeyPoint2DArray.msg
+   KeyPoint3DArray.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -221,6 +222,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(human_pose_tf_broadcaster src/human_pose_tf_broadcaster.cpp)
-add_dependencies(human_pose_tf_broadcaster ${PROJECT_NAME}_generate_messages)
-target_link_libraries(human_pose_tf_broadcaster ${catkin_LIBRARIES})
+add_executable(human_pose_3d src/human_pose_3d.cpp)
+add_dependencies(human_pose_3d ${PROJECT_NAME}_generate_messages ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(human_pose_3d ${catkin_LIBRARIES})
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
