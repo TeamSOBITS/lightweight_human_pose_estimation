@@ -1,0 +1,23 @@
+
+<launch>
+    <!-- <arg name ="base_frame_name"   default="base_footprint"/> -->
+    <arg name ="base_frame_name"   default="camera_link"/>
+    <arg name ="pose_2d_topic_name"  default="/human_pose_2d/pose_array"/>
+    <arg name ="cloud_topic_name"  default="/camera/depth/points"/>
+
+    <arg name ="pose_3d_detect"    default="true"/>
+    <arg name ="pose_3d_topic_pub" default="true"/>
+    <arg name ="pose_3d_tf_pub"    default="true"/>
+    <arg name ="pose_3d_log_show"  default="false"/>
+
+    <node name="human_pose_3d" pkg="lightweight_human_pose_estimation" type="human_pose_3d" respawn="false" output="screen">
+        <param name="base_frame_name"    value="$(arg base_frame_name)"/>
+        <param name="pose_2d_topic_name" value="$(arg pose_2d_topic_name)"/>
+        <param name="cloud_topic_name"   value="$(arg cloud_topic_name)"/>
+
+        <param name="pose_3d_detect"    type="bool" value="$(arg pose_3d_detect)"/>
+        <param name="pose_3d_topic_pub" type="bool" value="$(arg pose_3d_topic_pub)"/>
+        <param name="pose_3d_tf_pub"    type="bool" value="$(arg pose_3d_tf_pub)"/>
+        <param name="pose_3d_log_show"  type="bool" value="$(arg pose_3d_log_show)"/>
+    </node>
+</launch>
