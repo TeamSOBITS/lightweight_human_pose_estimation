@@ -5,8 +5,9 @@
 #include <message_filters/time_synchronizer.h>
 
 #include <geometry_msgs/Point.h>
-#include <sensor_msgs/Image.h>
+// #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/CameraInfo.h>
 
 #include "lightweight_human_pose_estimation/KeyPoint2D.h"
 #include "lightweight_human_pose_estimation/KeyPoint2DArray.h"
@@ -14,7 +15,7 @@
 #include "lightweight_human_pose_estimation/KeyPoint3DArray.h"
 #include "sobits_msgs/RunCtrl.h"
 
-#include <cv_bridge/cv_bridge.h>
+// #include <cv_bridge/cv_bridge.h>
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
@@ -41,20 +42,24 @@ class Pose3D {
         std::string     base_frame_name_;
         std::string     pose_2d_topic_name_;
         std::string     cloud_topic_name_;
+        std::string     camera_info_topic_name_;
+
         bool            pose_3d_detect_;
         bool            pose_3d_topic_pub_;
         bool            pose_3d_tf_pub_;
-        bool            pose_3d_log_show_;
+        bool            pose_3d_log_show_;   
 
+        int32_t         camera_width_ = 0;
         PointCloud::Ptr cloud_transformed_;
 
-        ros::Publisher pub_result_3d_array_;
+        ros::Publisher     pub_result_3d_array_;
+        ros::ServiceServer srv_subscriber_switch_;
+        ros::Subscriber    sub_camera_info_;
+
         std::unique_ptr<message_filters::Subscriber<lightweight_human_pose_estimation::KeyPoint2DArray>> sub_result_2d_array_;
         std::unique_ptr<message_filters::Subscriber<sensor_msgs::PointCloud2>>                           sub_pcl_;
         std::shared_ptr<message_filters::Synchronizer<KeyPointSPointSyncPolicy>>                         sync_;
 
-        ros::ServiceServer srv_subscriber_switch_;
-        ros::ServiceServer srv_line_detection_;
 
         bool callbackSubscriberSwitch( sobits_msgs::RunCtrl::Request &req, sobits_msgs::RunCtrl::Response &res ) {
             pose_3d_detect_ = req.request;
@@ -63,10 +68,27 @@ class Pose3D {
             return true;
         }
 
+        void callbackCameraInfo( const sensor_msgs::CameraInfo msg ) {
+            // Get the camera info
+            camera_width_ = msg.width;
+
+            return;
+        }
+
         void callbackKeyPointsPCL(const lightweight_human_pose_estimation::KeyPoint2DArrayConstPtr &pose_2d_array_msg,
                                   const sensor_msgs::PointCloud2ConstPtr                           &pcl_msg) {
+            // Check if the 3D Pose estimation is enabled
             if (!pose_3d_detect_) {
                 return;
+            }
+
+            // Obtain the camera width
+            if (!camera_width_){
+                ROS_ERROR("[Human Pose 3D] `camera_width_` was not obtained. Please check the camera_info topic)");
+                return;
+            }
+            else{
+                sub_camera_info_.shutdown();
             }
 
             std::string target_frame_name  = pcl_msg->header.frame_id;
@@ -78,20 +100,20 @@ class Pose3D {
 
             bool can_tf = tfBuffer_.canTransform(base_frame_name_, target_frame_name, frame_stamp);
             if (!can_tf) {
-                ROS_ERROR("[Human Pose TF Broadcaster] canTransform() failed. `base_frame_name_` and `target_frame_name` might be wrong!)");
+                ROS_ERROR("[Human Pose 3D] canTransform() failed. `base_frame_name_` and `target_frame_name` might be wrong!)");
                 return;
             }
 
             bool is_tf_pcl = pcl_ros::transformPointCloud(base_frame_name_, cloud_src, *cloud_transformed_, tfBuffer_);
             if (!is_tf_pcl) {
-                ROS_ERROR("[Human Pose TF Broadcaster] transformPointCloud() failed. PointCloud could not be transformed");
+                ROS_ERROR("[Human Pose 3D] transformPointCloud() failed. PointCloud could not be transformed");
                 return;
             }
 
 			// Check if there is any keypoint
             lightweight_human_pose_estimation::KeyPoint2DArray pose_2d_array = *pose_2d_array_msg;
             if (pose_2d_array.data.size() == 0) {
-                ROS_ERROR("[Human Pose TF Broadcaster] No human was detected. Skipping the 3D Pose estimation");
+                ROS_ERROR("[Human Pose 3D] No human was detected. Skipping the 3D Pose estimation");
                 return;
             }
 
@@ -187,8 +209,8 @@ class Pose3D {
                     }
 
                     // Get the 3D Pose(x,y,z) from each 2D Pose(x,y) body part by refering to the Point Cloud
-                    if (!(point_x < 0 || point_x >= cloud_transformed_->width || point_y < 0 || point_y >= cloud_transformed_->height)) {
-                        PointT transform_coords = cloud_transformed_->points[point_y * cloud_transformed_->width + point_x];
+                    if (!(point_x < 0 || point_x >= camera_width_ || point_y < 0 || point_y >= cloud_transformed_->height)) {
+                        PointT transform_coords = cloud_transformed_->points[point_y * camera_width_ + point_x];
                         if (std::isnan(transform_coords.x) || std::isnan(transform_coords.y) || std::isnan(transform_coords.z)) {
                             continue;
                         }
@@ -356,27 +378,32 @@ class Pose3D {
     public:
         Pose3D() : nh_("~"), tfBuffer_(), tfListener_(tfBuffer_) {
             // Get params from launcher
-            nh_.param<std::string>("/human_pose_tf_broadcaster/base_frame_name", base_frame_name_, "base_footprint");
-            nh_.param<std::string>("/human_pose_tf_broadcaster/pose_2d_topic_name", pose_2d_topic_name_, "/human_pose_2d/pose_array");
-            nh_.param<std::string>("/human_pose_tf_broadcaster/cloud_topic_name", cloud_topic_name_, "/camera/depth/points");
+            nh_.param<std::string>("base_frame_name", base_frame_name_, "base_footprint");
+            nh_.param<std::string>("pose_2d_topic_name", pose_2d_topic_name_, "/human_pose_2d/pose_array");
+            nh_.param<std::string>("cloud_topic_name", cloud_topic_name_, "/camera/depth/points");
+            nh_.param<std::string>("camera_info_topic_name", camera_info_topic_name_, "/camera/rgb/camera_info");
 
-            nh_.param<bool>("/human_pose_tf_broadcaster/pose_3d_detect", pose_3d_detect_, true);
-            nh_.param<bool>("/human_pose_tf_broadcaster/pose_3d_topic_pub", pose_3d_topic_pub_, true);
-            nh_.param<bool>("/human_pose_tf_broadcaster/pose_3d_tf_pub", pose_3d_tf_pub_, true);
-            nh_.param<bool>("/human_pose_tf_broadcaster/pose_3d_log_show", pose_3d_log_show_, true);
+            // check! it might be depth camera_info
 
-            std::cout << "human_pose_tf_broadcaster[base_frame_name]: " << base_frame_name_ << std::endl;
-            std::cout << "human_pose_tf_broadcaster[pose_2d_topic_name]: " << pose_2d_topic_name_ << std::endl;
-            std::cout << "human_pose_tf_broadcaster[cloud_topic_name]: " << cloud_topic_name_ << std::endl;
+            nh_.param<bool>("pose_3d_detect", pose_3d_detect_, true);
+            nh_.param<bool>("pose_3d_topic_pub", pose_3d_topic_pub_, true);
+            nh_.param<bool>("pose_3d_tf_pub", pose_3d_tf_pub_, true);
+            nh_.param<bool>("pose_3d_log_show", pose_3d_log_show_, true);
 
-            std::cout << "human_pose_tf_broadcaster[pose_3d_detect]: " << pose_3d_detect_ << std::endl;
-            std::cout << "human_pose_tf_broadcaster[pose_3d_topic_pub]: " << pose_3d_topic_pub_ << std::endl;
-            std::cout << "human_pose_tf_broadcaster[pose_3d_tf_pub]: " << pose_3d_tf_pub_ << std::endl;
-            std::cout << "human_pose_tf_broadcaster[pose_3d_log_show]: " << pose_3d_log_show_ << std::endl;
+            std::cout << "human_pose_3d[base_frame_name]: " << base_frame_name_ << std::endl;
+            std::cout << "human_pose_3d[pose_2d_topic_name]: " << pose_2d_topic_name_ << std::endl;
+            std::cout << "human_pose_3d[cloud_topic_name]: " << cloud_topic_name_ << std::endl;
+            std::cout << "human_pose_3d[camera_info_topic_name]: " << camera_info_topic_name_ << std::endl;
+
+            std::cout << "human_pose_3d[pose_3d_detect]: " << pose_3d_detect_ << std::endl;
+            std::cout << "human_pose_3d[pose_3d_topic_pub]: " << pose_3d_topic_pub_ << std::endl;
+            std::cout << "human_pose_3d[pose_3d_tf_pub]: " << pose_3d_tf_pub_ << std::endl;
+            std::cout << "human_pose_3d[pose_3d_log_show]: " << pose_3d_log_show_ << std::endl;
 
             // ROS publishers and subscribers
-            srv_subscriber_switch_ = nh_.advertiseService( "run_ctr", &Pose3D::callbackSubscriberSwitch, this);
             pub_result_3d_array_ = nh_.advertise<lightweight_human_pose_estimation::KeyPoint3DArray>("pose_array", 10);
+            srv_subscriber_switch_ = nh_.advertiseService( "run_ctr", &Pose3D::callbackSubscriberSwitch, this);
+            sub_camera_info_ = nh_.subscribe(camera_info_topic_name_, 1, &Pose3D::callbackCameraInfo, this);
             sub_result_2d_array_.reset(new message_filters::Subscriber<lightweight_human_pose_estimation::KeyPoint2DArray>(nh_, pose_2d_topic_name_, 5));
             sub_pcl_.reset(new message_filters::Subscriber<sensor_msgs::PointCloud2>(nh_, cloud_topic_name_, 5));
             
