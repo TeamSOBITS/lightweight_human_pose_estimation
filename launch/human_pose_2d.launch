@@ -8,7 +8,7 @@
     <arg name ="input_image_topic"  default="/camera/rgb/image_raw"/>
 
     <arg name ="pose_2d_img_show" default="false"/>
-    <arg name ="pose_2d_img_pub"  default="false"/>
+    <arg name ="pose_2d_img_pub"  default="true"/>
     <arg name ="pose_2d_log_show" default="false"/>
 
     <node name="human_pose_2d" pkg = "lightweight_human_pose_estimation" type="human_pose_2d.py" output="screen">
