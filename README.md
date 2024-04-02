@@ -170,7 +170,6 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
-
 ### 推論パラメータ
 
 2次元の推論時のパラメータを[human_pose.launch](launch/human_pose.launch)に修正することができる．
@@ -339,6 +338,7 @@ $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --vid
 
 
 ## 参考文献
+
 - [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://github.com/Daniil-Osokin/lightweight-human-pose-estimation.pytorch)
 ```
 @inproceedings{osokin2018lightweight_openpose,
