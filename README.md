@@ -25,6 +25,16 @@
       </ul>
     </li>
     <li>
+      <a href="#実行・操作方法">実行方法</a>
+      <ul>
+        <li><a href="#カメラの起動">カメラの起動</a></li>
+        <li><a href="#推論パラメータ">推論パラメータ</a></li>
+        <li><a href="#骨格検出の起動">骨格検出の起動</a></li>
+        <li><a href="#subscribers--publishers">Subscribers & Publishers</a></li>
+        <li><a href="#services">Services</a></li>
+      </ul>
+    </li>
+    <li>
       <a href="#本モデルの学習">本モデルの学習</a>
       <ul>
         <li><a href="#事前設定">事前設定</a></li>
@@ -34,21 +44,8 @@
         <li><a href="#pythonデモ">Pythonデモ</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#実行方法">実行方法</a>
-      <ul>
-        <li><a href="#カメラの起動">カメラの起動</a></li>
-        <li><a href="#2次元骨格検出起動">2次元骨格検出起動</a></li>
-        <li><a href="#3次元骨格検出起動">3次元骨格検出起動</a></li>
-        <li><a href="#2d-subscriptions">2D Subscriptions</a></li>
-        <li><a href="#2d-publications">2D Publications</a></li>
-        <li><a href="#3d-subscriptions">3D Subscriptions</a></li>
-        <li><a href="#3d-publications">3D Publications</a></li>
-        <li><a href="#parameters">Parameters</a></li>
-      </ul>
-    </li>
     <li><a href="#マイルストーン">マイルストーン</a></li>
-    <li><a href="#最後に">最後に</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
   </ol>
 </details>
 
@@ -59,7 +56,6 @@
 画像中にいる人物のポーズを特定するために，骨格（キーポイントとそれらの間の接続で構成される）を検出する．
 その中，「耳，目，鼻，首，肩，肘，手首，腰，膝，足首」の最大18個の骨格のリアルタイムに推定できます．
 またRGB-Dセンサの点群情報を用いて，2次元の骨格座標だけでなく，3次元の骨格座標を取得することもできる．
-
 
 <details>
 <summary>検出可能な骨格一覧</summary>
@@ -151,8 +147,6 @@ USBカメラ(PC内蔵カメラ)を利用する場合，次のコマンドを実�
 roslaunch lightweight_human_pose_estimation camera.launch
 ```
 
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
-
 <details>
 <summary>USBカメラエラーの対策法</summary>
 
@@ -168,8 +162,6 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 > [!INFO]
 > `/dev/bus/usb/001/002`が変わる可能性がある．表示に応じて，コマンドを修正してください．
-
-<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 </details>
 
