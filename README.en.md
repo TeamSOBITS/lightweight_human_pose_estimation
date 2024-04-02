@@ -51,134 +51,105 @@
 </details>
 
 
-## Summary
-The repository where the training code for the paper [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) is implemented is now available as a fork repository for ROS1. The repository is a forked repository of [OpenPose](). This is a greatly optimized version of the [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) method that allows real-time inference on CPUs without loss of accuracy. To identify the pose of a person in an image, a skeleton (consisting of key points and connections between them) is detected. Up to 18 skeletons can be estimated in real time: "ears, eyes, nose, neck, shoulders, elbows, wrists, hips, knees, and ankles." In addition, using the point cloud information from the RGB-D sensor, the system can obtain not only 2D skeletal coordinates but also 3D skeletal coordinates.
+<!-- INTRODUCTION -->
+## Introduction
+
+The repository where the training code for the paper [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://arxiv.org/pdf/1811.12004.pdf) is implemented is now available as a fork repository for ROS1.
+To identify the pose of a person in an image, a skeleton (consisting of key points and connections between them) is detected.
+Up to 18 skeletons can be estimated in real time: "ears, eyes, nose, neck, shoulders, elbows, wrists, hips, knees, and ankles."
+In addition, using the point cloud information from the RGB-D sensor, the system can obtain not only 2D skeletal coordinates but also 3D skeletal coordinates.
+
+<details>
+<summary>List of body parts</summary>
+
+| ID | Variable | Body Part |
+| --- | --- | --- |
+| 0  | nose   | nose |
+| 1  | neck   | neck |
+| 2  | r_sho  | right shoulder |
+| 3  | r_elb  | right elbow |
+| 4  | r_wri  | right wrist |
+| 5  | l_sho  | left shoulder |
+| 6  | l_elb  | left elbow |
+| 7  | l_wri  | left wrist |
+| 8  | r_hip  | right hip |
+| 9  | r_knee | right knee |
+| 10 | r_ank  | right ankle |
+| 11 | l_hip  | left hip |
+| 12 | l_knee | left knee |
+| 13 | l_ank  | left ankle |
+| 14 | r_eye  | right eye |
+| 15 | l_eye  | left eye |
+| 16 | r_ear  | right ear |
+| 17 | l_ear  | left ear |
+
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<p align="center">
-  <img src="img/preview_2.png" height="320"/>
-</p>
-
 ## Setup
 
+This section describes how to set up this repository.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Prerequisites
 
-* Ubuntu 20.04
-* Python 3.8
-* PyTorch 1.13.1
-* OpenCV 4.6.0
-* ROS Noetic Ninjemys
+First, please set up the following environment before proceeding to the next installation stage.
+
+| System  | Version |
+| --- | --- |
+| Ubuntu  | 20.04 (Focal Fossa) |
+| ROS     | Noetic Ninjemys |
+| Python  | 3.8 |
+| OpenCV  | 4.9.0 |
+| PyTorch | >=0.4.1 (Tested on: 2.2.1) |
+
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 ### Installation
 
-```bash
-$ cd ~/catkin_ws/src/
-$ git clone https://gitlab.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch.git
-$ cd lightweight_human_pose_estimation_pytorch
-$ bash install.sh
-$ cd ~/catkin_ws/
-$ catkin_make 
-```
+1. Go to the `src` folder of ROS.
+   ```sh
+   $ roscd
+   # Or just use "cd ~/catkin_ws/" and change directory.
+   $ cd src/
+   ```
+2. Clone this repository.
+   ```sh
+   $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch
+   ```
+3. Navigate into the repository.
+   ```sh
+   $ cd lightweight_human_pose_estimation_pytorch/
+   ```
+4. Install the dependent packages.
+   ```sh
+   $ bash install.sh
+   ```
+5. Compile the package.
+   ```sh
+   $ roscd
+   # Or just use "cd ~/catkin_ws/" and change directory.
+   $ catkin_make
+   ```
 
-## Training
-
-<details>
-<summary>details</summary>
-
-### Preparation
-
-1. Download COCO 2017 dataset: [http://cocodataset.org/#download](http://cocodataset.org/#download) (train, val, annotations) and unpack it to `<COCO_HOME>` folder.
-2. Install requirements
-
-```bash
-$ python3 -m pip install -r requirements.txt
-```
-
-### Training by yourself
-
-Training consists of 3 steps (given AP values for full validation dataset):
-* Training from MobileNet weights. Expected AP after this step is ~38%.
-* Training from weights, obtained from previous step. Expected AP after this step is ~39%.
-* Training from weights, obtained from previous step and increased number of refinement stages to 3 in network. Expected AP after this step is ~40% (for the network with 1 refinement stage, two next are discarded).
-
-1. Download pre-trained MobileNet v1 weights `mobilenet_sgd_68.848.pth.tar` from: [https://github.com/marvis/pytorch-mobilenet](https://github.com/marvis/pytorch-mobilenet) (sgd option). If this doesn't work, download from [GoogleDrive](https://drive.google.com/file/d/18Ya27IAhILvBHqV_tDp0QjDFvsNNy-hv/view?usp=sharing).
-
-2. Convert train annotations in internal format. Run:
-
-```bash
-$ python3 scripts/prepare_train_labels.py --labels <COCO_HOME>/annotations/person_keypoints_train2017.json
-```
-
-It will produce `prepared_train_annotation.pkl` with converted in internal format annotations.
-
-   [OPTIONAL] For fast validation it is recommended to make *subset* of validation dataset. Run:
-
-```bash
-$ python3 scripts/make_val_subset.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json
-```
-
-It will produce `val_subset.json` with annotations just for 250 random images (out of 5000).
-
-3. To train from MobileNet weights, run:
-
-```bash
-$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/mobilenet_sgd_68.848.pth.tar --from-mobilenet
-```
-
-4. Next, to train from checkpoint from previous step, run:
-
-```bash
-$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_420000.pth --weights-only
-```
-
-5. Finally, to train from checkpoint from previous step and 3 refinement stages in network, run:
-
-```bash
-$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_280000.pth --weights-only --num-refinement-stages 3
-```
-
-We took checkpoint after 370000 iterations as the final one.
-
-We did not perform the best checkpoint selection at any step, so similar result may be achieved after less number of iterations.
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
 
 
-### Validation
-
-1. Run:
-
-```bash
-$ python3 val.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json --images-folder <COCO_HOME>/val2017 --checkpoint-path <CHECKPOINT>
-```
-
-### Pre-trained model
-
-The model expects normalized image (mean=[128, 128, 128], scale=[1/256, 1/256, 1/256]) in planar BGR format.
-Pre-trained on COCO model is available at: https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth, it has 40% of AP on COCO validation set (38.6% of AP on the val *subset*).
-
-### Python Demo
-
-We provide python demo just for the quick results preview. Please, consider c++ demo for the best performance. To run the python demo from a webcam:
-
-```bash
-$ cd script
-$ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --video 0
-```
-</details>
-
-
+<!-- LAUNCH AND USAGE EXAMPLES -->
 ## Launch and Usage
 
+### Camera bring-up
 
-### Camera
-When using a USB camera (PC built-in camera)
+When using a USB camera (PC built-in camera), execute the following command.
 ```bash
 roslaunch lightweight_human_pose_estimation camera.launch
 ```
+
 <details>
-<summary>※Solution for USB camera error</summary>
+<summary>Solution for USB camera error</summary>
 
 If the following error occurs:
 ```bash
@@ -189,54 +160,160 @@ Run the following code:
 ```bash
 $ sudo chmod o+w /dev/bus/usb/001/002
 ```
+> [!INFO]
+> Beware that the `/dev/bus/usb/001/002` section might change.
+Adapt the command based on the log in the terminal.
+
 </details>
 
 
-[When using Azure Kinect](https://github.com/TeamSOBITS/azure_kinect_ros_driver) 
-[When using RealSense](https://github.com/TeamSOBITS/realsense_ros) 
+> [!INFO]
+> If you plan to use [Azure Kinect](https://github.com/TeamSOBITS/azure_kinect_ros_driver) or [RealSense](https://github.com/TeamSOBITS/realsense_ros), plase do not forget to configure the environment. 
 
-### 2D skeleton detection 
+<p align="right">(<a href="#readme-top">上に戻る</a>)</p>
+
+### Inference Parameters
+
+1. Depending on the functions you need to turn on for the pose detection, please update the [human_pose.launch](launch/human_pose.launch).
+    ``` xml
+    <!-- Camera RBG Image Raw topic -->
+    <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
+
+    <!-- Select the camera base frame -->
+    <arg name ="base_frame_name"        default="camera_link"/>
+    <!-- Select the pose_2d topic name -->
+    <arg name ="pose_2d_topic_name"     default="/human_pose_2d/pose_array"/>
+    <!-- Select the cloud topic name -->
+    <arg name ="cloud_topic_name"       default="/camera/depth/points"/>
+    <!-- Select the camera_info topic name -->
+    <arg name ="camera_info_topic_name" default="/camera/rgb/camera_info"/>
+
+    <!-- Show 2D Pose result image (true) -->
+    <arg name ="pose_2d_img_show"       default="false"/>
+    <!-- Publish 2D Pose result image (true) -->
+    <arg name ="pose_2d_img_pub"        default="true"/>
+    <!-- Show 2D Pose result as log in terminal (true) -->
+    <arg name ="pose_2d_log_show"       default="false"/>
+
+    <!-- Enable 3D Pose detection (true) -->
+    <arg name ="pose_3d_detect"         default="true"/>
+    <!-- Publish 3D Pose result as topic (true) -->
+    <arg name ="pose_3d_topic_pub"      default="false"/>
+    <!-- Broadcast 3D Pose result as TF (true) -->
+    <arg name ="pose_3d_tf_pub"         default="true"/>
+    <!-- Show 3D Pose result as log in terminal (true) -->
+    <arg name ="pose_3d_log_show"       default="false"/>
+    ```
+
+2. Execute the launch file.
+    ```bash
+    roslaunch lightweight_human_pose_estimation human_pose.launch
+    ```
+
+### Subscribers & Publishers
+
+- Subscribers:
+
+| Topic | Type | Meaning |
+| --- | --- | --- |
+| /camera/rgb/image_raw     | sensor_msgs/Image                                 | Camera Image |
+| /camera/depth/points      | sensor_msgs/PointCloud2                           | Camera PointCloud |
+| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2D Pose result information |
+
+- Publishers:
+
+| Topic | Type | Meaning |
+| --- | --- | --- |
+| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2D Pose result information |
+| /human_pose_2d/pose_img   | sensor_msgs/Image                                 | 2D Pose result image |
+| /human_pose_3d/pose_array | lightweight_human_pose_estimation/KeyPoints_3d    | 3D Pose result information |
+
+
+### Services
+
+| Service | Type | Meaning |
+| --- | --- | --- |
+| /human_pose_3d/run_ctr | sobits_msgs/RunCtrl | 3D Pose Detection toogle (ON:`true`, OFF:`false`) |
+
+## Training
+
+<details>
+<summary>details</summary>
+
+### Preparation
+
+1. Download COCO 2017 dataset: [http://cocodataset.org/#download](http://cocodataset.org/#download) (train, val, annotations) and unpack it to `<COCO_HOME>` folder.
+2. Install requirements
 ```bash
-roslaunch lightweight_human_pose_estimation human_pose_estimation.launch
+$ python3 -m pip install -r requirements.txt
 ```
-### 3D skeleton detection 
+
+### Training by yourself
+
+Training consists of 3 steps (given AP values for full validation dataset):
+- Training from MobileNet weights. Expected AP after this step is ~38%.
+- Training from weights, obtained from previous step.
+Expected AP after this step is ~39%.
+- Training from weights, obtained from previous step and increased number of refinement stages to 3 in network.
+Expected AP after this step is ~40% (for the network with 1 refinement stage, two next are discarded).
+
+1. Download pre-trained MobileNet v1 weights `mobilenet_sgd_68.848.pth.tar` from: [https://github.com/marvis/pytorch-mobilenet](https://github.com/marvis/pytorch-mobilenet) (sgd option).
+If this doesn't work, download from [GoogleDrive](https://drive.google.com/file/d/18Ya27IAhILvBHqV_tDp0QjDFvsNNy-hv/view?usp=sharing).
+
+2. Convert train annotations in internal format.
+It will produce `prepared_train_annotation.pkl` with converted in internal format annotations.
+Run:
 ```bash
-$ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
+$ python3 scripts/prepare_train_labels.py --labels <COCO_HOME>/annotations/person_keypoints_train2017.json
 ```
 
-### 2D Subscriptions
-|Topic Name|Type|Meaning|
-|---|---|---|
-|/camera/rgb/image_raw|sensor_msgs/Image|Sensor image|
+[OPTIONAL] For fast validation it is recommended to make *subset* of validation dataset.
+It will produce `val_subset.json` with annotations just for 250 random images (out of 5000).
+Run:
+```bash
+$ python3 scripts/make_val_subset.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json
+```
 
-### 2D Publications
-|トピック名|型|意味|
-|---|---|---|
-|/human_pose_estimation/pose|lightweight_human_pose_estimation/KeyPoints|2D skeletal information|
-|/human_pose_estimation/pose|sensor_msgs/Image|2D skeletal image|
+3. To train from MobileNet weights, run:
+```bash
+$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/mobilenet_sgd_68.848.pth.tar --from-mobilenet
+```
 
-### 3D Subscriptions
-|トピック名|型|意味|
-|---|---|---|
-|/camera/depth/points|sensor_msgs/PointCloud2|Sensor point cloud|
-|/human_pose_estimation/pose|lightweight_human_pose_estimation/KeyPoints|2D skeletal information|
+4. Next, to train from checkpoint from previous step, run:
+```bash
+$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_420000.pth --weights-only
+```
+
+5. Finally, to train from checkpoint from previous step and 3 refinement stages in network, run:
+```bash
+$ python3 train.py --train-images-folder <COCO_HOME>/train2017/ --prepared-train-labels prepared_train_annotation.pkl --val-labels val_subset.json --val-images-folder <COCO_HOME>/val2017/ --checkpoint-path <path_to>/checkpoint_iter_280000.pth --weights-only --num-refinement-stages 3
+```
+> ![NOTE]
+> 
+We took checkpoint after 370000 iterations as the final one.
+We did not perform the best checkpoint selection at any step, so similar result may be achieved after less number of iterations.
 
 
-### 3D Publications
-|トピック名|型|意味|
-|---|---|---|
-|/lightweight_human_pose_estimation/human_pose_estimation/pose_3d|lightweight_human_pose_estimation/KeyPoints_3d|3D skeletal information|
+### Validation
 
-### Parameters
-|パラメータ名|型|意味|
-|---|---|---|
-|/human_pose_estimation/lightweight_human_pose_estimation/checkpoint_path|string|Path of the model weight file|
-|/human_pose_estimation/lightweight_human_pose_estimation/cpu|bool|Skeleton detection by CPU only (when using CUDA : False)|
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_image_topic_name|string|Topic name of sensor image|
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_img_show_flag|bool|Flag whether to display images|
-|/human_pose_estimation/lightweight_human_pose_estimation/pose_pub_result_image|bool|Flag whether to publish skeletal detection images|
-|/human_pose_estimation/lightweight_human_pose_estimation/smooth|bool|Flag whether to smooth the framework with the previous frame|
-|/human_pose_estimation/lightweight_human_pose_estimation/track|bool|Flag whether to propagate the result of the previous frame|
+1. Run:
+```bash
+$ python3 val.py --labels <COCO_HOME>/annotations/person_keypoints_val2017.json --images-folder <COCO_HOME>/val2017 --checkpoint-path <CHECKPOINT>
+```
+
+### Pre-trained model
+
+The model expects normalized image (mean=[128, 128, 128], scale=[1/256, 1/256, 1/256]) in planar BGR format.
+Pre-trained on COCO model is available at: [checkpoint_iter_370000.pth](https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth), it has 40% of AP on COCO validation set (38.6% of AP on the val *subset*).
+
+### Python Demo
+
+We provide python demo just for the quick results preview. Please, consider c++ demo for the best performance. To run the python demo from a webcam:
+```bash
+$ cd lightweight-human-pose-estimation/script
+$ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --video 0
+```
+</details>
 
 
 ## Milestone
@@ -245,15 +322,12 @@ $ roslaunch lightweight_human_pose_estimation human_pose_estimation_3d.launch
     - [x]  Improved documentation
     - [x]  Unified coding style
 
-See the open issues for a full list of proposed features (and known issues).
-<!-- ## 参考文献
-* [Dynamixel SDK](https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/)
-* [ROS Noetic](http://wiki.ros.org/noetic)
-* [ROS Control](http://wiki.ros.org/ros_control) -->
+See the [open issues][issues-url] for a full list of proposed features (and known issues).
 
-### Finally
-If this helps your research, please cite the paper:
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
 
+- [Real-time 2D Multi-Person Pose Estimation on CPU: Lightweight OpenPose](https://github.com/Daniil-Osokin/lightweight-human-pose-estimation.pytorch)
 ```
 @inproceedings{osokin2018lightweight_openpose,
     author={Osokin, Daniil},
