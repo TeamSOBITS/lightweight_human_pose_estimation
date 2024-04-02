@@ -160,14 +160,14 @@ Run the following code:
 ```bash
 $ sudo chmod o+w /dev/bus/usb/001/002
 ```
-> [!INFO]
+> [!NOTE]
 > Beware that the `/dev/bus/usb/001/002` section might change.
 Adapt the command based on the log in the terminal.
 
 </details>
 
 
-> [!INFO]
+> [!NOTE]
 > If you plan to use [Azure Kinect](https://github.com/TeamSOBITS/azure_kinect_ros_driver) or [RealSense](https://github.com/TeamSOBITS/realsense_ros), plase do not forget to configure the environment. 
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>

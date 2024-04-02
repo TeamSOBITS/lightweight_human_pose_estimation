@@ -160,12 +160,12 @@ roslaunch lightweight_human_pose_estimation camera.launch
 $ sudo chmod o+w /dev/bus/usb/001/002
 ```
 
-> [!INFO]
+> [!NOTE]
 > `/dev/bus/usb/001/002`が変わる可能性がある．表示に応じて，コマンドを修正してください．
 
 </details>
 
-> [!INFO]
+> [!NOTE]
 > [Azure Kinect](https://github.com/TeamSOBITS/azure_kinect_ros_driver) や[RealSenseを利用](https://github.com/TeamSOBITS/realsense_ros) を使用する場合，それぞれのセットアップを済まし，カメラを起動してください．
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
