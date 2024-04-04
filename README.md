@@ -198,6 +198,8 @@ $ sudo chmod o+w /dev/bus/usb/001/002
     <!-- Select the camera_info topic name -->
     <arg name ="camera_info_topic_name" default="/camera/rgb/camera_info"/>
 
+    <!-- Enable 2D Pose detection (true) -->
+    <arg name ="pose_2d_detect"         default="true"/>
     <!-- Show 2D Pose result image (true) -->
     <arg name ="pose_2d_img_show"       default="false"/>
     <!-- Publish 2D Pose result image (true) -->
@@ -243,6 +245,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 | サービス名 | 型 | 意味 |
 | --- | --- | --- |
+| /human_pose_2d/run_ctr | sobits_msgs/RunCtrl | 2次元検出の切り替え(ON:`true`, OFF:`false`) |
 | /human_pose_3d/run_ctr | sobits_msgs/RunCtrl | 3次元検出の切り替え(ON:`true`, OFF:`false`) |
 
 

@@ -188,6 +188,8 @@ Adapt the command based on the log in the terminal.
     <!-- Select the camera_info topic name -->
     <arg name ="camera_info_topic_name" default="/camera/rgb/camera_info"/>
 
+    <!-- Enable 2D Pose detection (true) -->
+    <arg name ="pose_2d_detect"         default="true"/>
     <!-- Show 2D Pose result image (true) -->
     <arg name ="pose_2d_img_show"       default="false"/>
     <!-- Publish 2D Pose result image (true) -->
@@ -233,6 +235,7 @@ Adapt the command based on the log in the terminal.
 
 | Service | Type | Meaning |
 | --- | --- | --- |
+| /human_pose_2d/run_ctr | sobits_msgs/RunCtrl | 2D Pose Detection toogle (ON:`true`, OFF:`false`) |
 | /human_pose_3d/run_ctr | sobits_msgs/RunCtrl | 3D Pose Detection toogle (ON:`true`, OFF:`false`) |
 
 ## Training
