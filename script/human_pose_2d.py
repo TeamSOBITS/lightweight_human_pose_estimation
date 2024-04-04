@@ -82,8 +82,8 @@ class Flame :
         self.sub_img = rospy.Subscriber(self.sub_img_topic_name, Image, self.img_cb)
 
         # Start Run_control Service
-        self.server = rospy.Service("runctrl", RunCtrl, self.run_ctrl_server)
-        self.sub_run_ctrl = rospy.Subscriber("run_ctrl", Bool, self.run_ctrl_callback)
+        self.server = rospy.Service("/human_pose_2d/run_ctr", RunCtrl, self.run_ctrl_server)
+        self.sub_run_ctrl = rospy.Subscriber("/human_pose_2d/run_ctr", Bool, self.run_ctrl_callback)
 
         # self.sum = 0
         # self.counter = 0
