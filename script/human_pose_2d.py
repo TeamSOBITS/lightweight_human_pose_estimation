@@ -2,7 +2,9 @@
 import rospy
 from geometry_msgs.msg import Point
 from sensor_msgs.msg import Image
+from std_msgs.msg import Bool
 from cv_bridge import CvBridge
+from sobits_msgs.srv import RunCtrl, RunCtrlResponse
 from lightweight_human_pose_estimation.msg import KeyPoint2D
 from lightweight_human_pose_estimation.msg import KeyPoint2DArray
 
@@ -53,6 +55,7 @@ class Flame :
         self.smooth          = rospy.get_param( rospy.get_name() + "/smooth", True )
 
         # Set params for ROS
+        self.pose_2d_detect  = rospy.get_param( rospy.get_name() + "/pose_2d_detect", True)
         self.img_show_flag   = rospy.get_param( rospy.get_name() + "/pose_2d_img_show", True )
         self.log_show_flag   = rospy.get_param( rospy.get_name() + "/pose_2d_log_show", True )
         self.img_pub_flag    = rospy.get_param( rospy.get_name() + "/pose_2d_img_pub", True )
@@ -78,11 +81,32 @@ class Flame :
         self.pub_result_img   = rospy.Publisher("~pose_img", Image, queue_size=10)
         self.sub_img = rospy.Subscriber(self.sub_img_topic_name, Image, self.img_cb)
 
+        # Start Run_control Service
+        self.server = rospy.Service("runctrl", RunCtrl, self.run_ctrl_server)
+        self.sub_run_ctrl = rospy.Subscriber("run_ctrl", Bool, self.run_ctrl_callback)
+
         # self.sum = 0
         # self.counter = 0
 
 
+    # RunCtrl Server
+    def run_ctrl_server(self, msg):
+        if msg.request:
+            self.pose_2d_detect = True
+        else:
+            self.pose_2d_detect = False
+        return RunCtrlResponse(True)
+    
+    def run_ctrl_callback(self, msg):
+        self.pose_2d_detect = msg.data
+        rospy.loginfo("run ctrl -> {}".format(self.pose_2d_detect))
+
+
     def img_cb(self, msg):
+
+        if not self.pose_2d_detect:
+            return
+        
         orig_img = img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
         heatmaps, pafs, scale, pad = infer_fast(self.net, img, self.height_size, self.stride, self.upsample_ratio, self.cpu)
 

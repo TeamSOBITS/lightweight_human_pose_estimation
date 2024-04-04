@@ -11,6 +11,8 @@
     <!-- Select the camera_info topic name -->
     <arg name ="camera_info_topic_name" default="/camera/rgb/camera_info"/>
 
+    <!-- Enable 2D Pose detection (true) -->
+    <arg name ="pose_2d_detect"         default="true"/>
     <!-- Show 2D Pose result image (true) -->
     <arg name ="pose_2d_img_show"       default="false"/>
     <!-- Publish 2D Pose result image (true) -->
@@ -42,6 +44,7 @@
 
         <param name="input_image_topic"     type="str"      value="$(arg input_image_topic)"/>
 
+        <param name="pose_2d_detect"        type="bool"     value="$(arg pose_2d_detect)"/>
         <param name="pose_2d_img_show"      type="bool"     value="$(arg pose_2d_img_show)"/>
         <param name="pose_2d_img_pub"       type="bool"     value="$(arg pose_2d_img_pub)"/>
         <param name="pose_2d_log_show"      type="bool"     value="$(arg pose_2d_log_show)"/>

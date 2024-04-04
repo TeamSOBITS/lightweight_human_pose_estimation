@@ -7,6 +7,7 @@
 
     <arg name ="input_image_topic"  default="/camera/rgb/image_raw"/>
 
+    <arg name ="pose_2d_detect"   default="true"/>
     <arg name ="pose_2d_img_show" default="false"/>
     <arg name ="pose_2d_img_pub"  default="true"/>
     <arg name ="pose_2d_log_show" default="false"/>
@@ -20,6 +21,7 @@
 
         <param name="input_image_topic"     type="str"      value="$(arg input_image_topic)"/>
 
+        <param name="pose_2d_detect"        type="bool"     value="$(arg pose_2d_detect)"/>
         <param name="pose_2d_img_show"      type="bool"     value="$(arg pose_2d_img_show)"/>
         <param name="pose_2d_img_pub"       type="bool"     value="$(arg pose_2d_img_pub)"/>
         <param name="pose_2d_log_show"      type="bool"     value="$(arg pose_2d_log_show)"/>
