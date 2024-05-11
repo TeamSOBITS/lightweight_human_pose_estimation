@@ -72,7 +72,6 @@ def group_keypoints(all_keypoints_by_type, pafs, pose_entry_size=20, min_paf_sco
         part_pafs = pafs[:, :, BODY_PARTS_PAF_IDS[part_id]]
         kpts_a = all_keypoints_by_type[BODY_PARTS_KPT_IDS[part_id][0]]
         kpts_b = all_keypoints_by_type[BODY_PARTS_KPT_IDS[part_id][1]]
-        rospy.loginfo(kpts_a)
         n = len(kpts_a)
         m = len(kpts_b)
         if n == 0 or m == 0:
