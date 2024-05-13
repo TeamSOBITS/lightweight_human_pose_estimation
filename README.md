@@ -117,7 +117,7 @@
     ```
 2. 本レポジトリをcloneします．
     ```sh
-    $ git clone https://gitlab.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch
+    $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch
     ```
 3. レポジトリの中へ移動します．
     ```sh
