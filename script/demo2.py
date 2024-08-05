@@ -1,4 +1,8 @@
-import argparse
+# import argparse
+import rclpy #ROS 2のPythonクライアントライブラリ
+from rclpy.node import Node # Topicやサブスクライバーできたりするノードを呼び出せるライブラリ
+from sensor_msgs.msg import Image # ROS 2で標準的な画像メッセージ型
+from cv_bridge import CvBridge #ROSの画像メッセージとOpenCVの画像形式は異なるため、CvBridgeを使用してこれらの形式を変換する．
 
 import cv2
 import numpy as np
@@ -11,6 +15,9 @@ from modules.pose import Pose, track_poses
 from val import normalize, pad_width
 
 # 画像ファイルのリストを順に読み込み
+
+
+# class ImageReader と class VideoReaderは
 class ImageReader(object):
     def __init__(self, file_names):
         self.file_names = file_names
@@ -126,7 +133,7 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
                           (pose.bbox[0] + pose.bbox[2], pose.bbox[1] + pose.bbox[3]), (0, 255, 0))
             if track:
                 cv2.putText(img, 'id: {}'.format(pose.id), (pose.bbox[0], pose.bbox[1] - 16),
-                            cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255))
+                            cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255))https://calendar.google.com/calendar/u/0/r/week
         cv2.imshow('Lightweight Human Pose Estimation Python Demo', img)
         key = cv2.waitKey(delay)
         if key == 27:  # esc
