@@ -1,0 +1,34 @@
+<launch>
+    <!-- Camera RBG Image Raw topic -->
+    <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
+
+    <!-- Enable 2D Pose detection (true) -->
+    <arg name ="pose_2d_detect"         default="true"/>
+    <!-- Show 2D Pose result image (true) -->
+    <arg name ="pose_2d_img_show"       default="true"/>
+    <!-- Publish 2D Pose result image (true) -->
+    <arg name ="pose_2d_img_pub"        default="true"/>
+    <!-- Show 2D Pose result as log in terminal (true) -->
+    <arg name ="pose_2d_log_show"       default="false"/>
+
+    <arg name ="checkpoint_path"        default="$(env COLCON_WORKSPACE)/lightweight_human_pose_estimation/lightweight_human_pose_estimation/script/checkpoints/checkpoint_iter_370000.pth"/>
+    <arg name ="height_size"            default="256"/>
+    <arg name ="cpu"                    default="false"/>
+    <arg name ="track"                  default="true"/>
+    <arg name ="smooth"                 default="true"/>
+
+    <node pkg = "lightweight_human_pose_estimation" exec="human_pose_2d.py" output="screen">
+        <param name="checkpoint_path"   value="$(var checkpoint_path)"/>
+        <param name="height_size"       value="$(var height_size)"/>
+        <param name="cpu"               value="$(var cpu)"/>
+        <param name="track"             value="$(var track)"/>
+        <param name="smooth"            value="$(var smooth)"/>
+
+        <param name="input_image_topic" value="$(var input_image_topic)"/>
+
+        <param name="pose_2d_detect"    value="$(var pose_2d_detect)"/>
+        <param name="pose_2d_img_show"  value="$(var pose_2d_img_show)"/>
+        <param name="pose_2d_img_pub"   value="$(var pose_2d_img_pub)"/>
+        <param name="pose_2d_log_show"  value="$(var pose_2d_log_show)"/>
+    </node>
+</launch>
