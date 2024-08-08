@@ -5,10 +5,10 @@
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/time_synchronizer.h>
 
-#include <geometry_msgs/Point.h>
-// #include <sensor_msgs/Image.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/CameraInfo.h>
+#include <geometry_msgs/msg/point.hpp>
+// #include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
 
 #include "lightweight_human_pose_estimation_msgs/msg/key_point2_d.hpp"
 #include "lightweight_human_pose_estimation_msgs/msg/key_point2_d_array.hpp"
@@ -20,7 +20,7 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
-#include <pcl_ros/transforms.h>
+#include <pcl_ros/transforms.hpp>
 
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/transform_broadcaster.h>

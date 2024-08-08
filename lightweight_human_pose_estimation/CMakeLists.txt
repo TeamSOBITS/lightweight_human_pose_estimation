@@ -6,7 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
-find_package(OpenCV 4.8.0 REQUIRED PATHS "/opt/opencv/opencv_4.8.0/")
+find_package(OpenCV 4.6.0 REQUIRED PATHS "/opt/opencv/opencv_4.6.0/")
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -16,22 +16,23 @@ find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
-find_package(cv_bridge REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(pcl_ros REQUIRED)
 find_package(rosidl_typesupport_cpp REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 find_package(lightweight_human_pose_estimation_msgs REQUIRED)
 find_package(sobits_msgs REQUIRED)
 
 
 #--- for C++
-# add_executable(human_pose_3d src/human_pose_3d.cpp)
-# ament_target_dependencies(human_pose_3d rclcpp std_msgs sensor_msgs pcl_conversions pcl_ros tf2_ros tf2_eigen tf2_geometry_msgs lightweight_human_pose_estimation_msgs rosidl_default_runtime)
-# include_directories(include ${PCL_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp ${ament_index_build_prefix}/${PROJECT_NAME}/include)
+include_directories(include)
+add_executable(human_pose_3d src/human_pose_3d.cpp)
+ament_target_dependencies(human_pose_3d rclcpp std_msgs geometry_msgs sensor_msgs pcl_conversions pcl_ros tf2_ros cv_bridge lightweight_human_pose_estimation_msgs sobits_msgs rosidl_default_runtime)
 
-# install(TARGETS
-#   human_pose_3d
-#   DESTINATION lib/${PROJECT_NAME}
-# )
+install(TARGETS
+  human_pose_3d
+  DESTINATION lib/${PROJECT_NAME}
+)
 #--- end C++
 
 #-- for Python
