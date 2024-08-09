@@ -19,6 +19,7 @@ python3 -m pip install \
 cd lightweight_human_pose_estimation/
 mkdir script/checkpoints/
 wget -P script/checkpoints/ https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth
+cd ..
 
 # Clone `sobits_msgs`
 CRT_DIR=$(pwd)
