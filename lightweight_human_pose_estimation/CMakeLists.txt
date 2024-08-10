@@ -47,6 +47,12 @@ install(DIRECTORY launch/
         DESTINATION share/${PROJECT_NAME}/launch)
 #--- end Launch
 
+#-- for Models
+install(DIRECTORY models/
+DESTINATION share/${PROJECT_NAME}/models)
+#--- end Config
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

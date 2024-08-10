@@ -27,9 +27,9 @@
     <!-- Show 3D Pose result as log in terminal (true) -->
     <arg name ="pose_3d_log_show"       default="false"/>
 
-    <arg name ="checkpoint_path"        default="$(env COLCON_WORKSPACE)/lightweight_human_pose_estimation/lightweight_human_pose_estimation/script/checkpoints/checkpoint_iter_370000.pth"/>
+    <arg name ="checkpoint_path"        default="$(find-pkg-share lightweight_human_pose_estimation)/models/checkpoint_iter_370000.pth"/>
     <arg name ="height_size"            default="256"/>
-    <arg name ="cpu"                    default="false"/>
+    <arg name ="cpu"                    default="true"/>
     <arg name ="track"                  default="true"/>
     <arg name ="smooth"                 default="true"/>
 
@@ -48,14 +48,14 @@
         <param name="pose_2d_log_show"  value="$(var pose_2d_log_show)"/>
     </node>
 
-    <node name="human_pose_3d" pkg="lightweight_human_pose_estimation" type="human_pose_3d" respawn="false" output="screen">
-        <param name="base_frame_name"    value="$(arg base_frame_name)"/>
-        <param name="cloud_topic_name"   value="$(arg cloud_topic_name)"/>
-        <param name="image_topic_name" value="$(arg image_topic_name)"/>
+    <node pkg="lightweight_human_pose_estimation" exec="human_pose_3d" output="screen">
+        <param name="base_frame_name"  value="$(var base_frame_name)"/>
+        <param name="cloud_topic_name" value="$(var cloud_topic_name)"/>
+        <param name="image_topic_name" value="$(var image_topic_name)"/>
 
-        <param name="pose_3d_detect"    type="bool" value="$(arg pose_3d_detect)"/>
-        <param name="pose_3d_topic_pub" type="bool" value="$(arg pose_3d_topic_pub)"/>
-        <param name="pose_3d_tf_pub"    type="bool" value="$(arg pose_3d_tf_pub)"/>
-        <param name="pose_3d_log_show"  type="bool" value="$(arg pose_3d_log_show)"/>
+        <param name="pose_3d_detect"    value="$(var pose_3d_detect)"/>
+        <param name="pose_3d_topic_pub" value="$(var pose_3d_topic_pub)"/>
+        <param name="pose_3d_tf_pub"    value="$(var pose_3d_tf_pub)"/>
+        <param name="pose_3d_log_show"  value="$(var pose_3d_log_show)"/>
     </node>
 </launch>
