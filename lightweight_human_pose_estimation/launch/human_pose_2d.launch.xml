@@ -1,6 +1,6 @@
 <launch>
     <!-- Camera RBG Image Raw topic -->
-    <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
+    <arg name ="image_topic_name" default="/camera/rgb/camera_info"/>
 
     <!-- Enable 2D Pose detection (true) -->
     <arg name ="pose_2d_detect"         default="true"/>
@@ -11,9 +11,9 @@
     <!-- Show 2D Pose result as log in terminal (true) -->
     <arg name ="pose_2d_log_show"       default="false"/>
 
-    <arg name ="checkpoint_path"        default="$(env COLCON_WORKSPACE)/lightweight_human_pose_estimation/lightweight_human_pose_estimation/script/checkpoints/checkpoint_iter_370000.pth"/>
+    <arg name ="checkpoint_path"        default="$(find-pkg-share lightweight_human_pose_estimation)/models/checkpoint_iter_370000.pth"/>
     <arg name ="height_size"            default="256"/>
-    <arg name ="cpu"                    default="false"/>
+    <arg name ="cpu"                    default="true"/>
     <arg name ="track"                  default="true"/>
     <arg name ="smooth"                 default="true"/>
 
@@ -24,7 +24,7 @@
         <param name="track"             value="$(var track)"/>
         <param name="smooth"            value="$(var smooth)"/>
 
-        <param name="input_image_topic" value="$(var input_image_topic)"/>
+        <param name="input_image_topic" value="$(var image_topic_name)"/>
 
         <param name="pose_2d_detect"    value="$(var pose_2d_detect)"/>
         <param name="pose_2d_img_show"  value="$(var pose_2d_img_show)"/>

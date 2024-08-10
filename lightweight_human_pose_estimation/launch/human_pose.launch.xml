@@ -1,13 +1,10 @@
 <launch>
     <!-- Camera RBG Image Raw topic -->
-    <arg name ="input_image_topic"      default="/camera/camera/color/image_raw"/>
-
-    <!-- Select the camera base frame -->
-    <arg name ="base_frame_name"        default="camera_link"/>
+    <arg name ="image_topic_name" default="/camera/rgb/camera_info"/>
     <!-- Select the cloud topic name -->
     <arg name ="cloud_topic_name"       default="/camera/depth/points"/>
-    <!-- Select the image topic name -->
-    <arg name ="image_topic_name" default="/camera/rgb/camera_info"/>
+    <!-- Select the camera base frame -->
+    <arg name ="base_frame_name"        default="camera_link"/>
 
     <!-- Enable 2D Pose detection (true) -->
     <arg name ="pose_2d_detect"         default="true"/>
@@ -40,7 +37,7 @@
         <param name="track"             value="$(var track)"/>
         <param name="smooth"            value="$(var smooth)"/>
 
-        <param name="input_image_topic" value="$(var input_image_topic)"/>
+        <param name="input_image_topic" value="$(var image_topic_name)"/>
 
         <param name="pose_2d_detect"    value="$(var pose_2d_detect)"/>
         <param name="pose_2d_img_show"  value="$(var pose_2d_img_show)"/>
