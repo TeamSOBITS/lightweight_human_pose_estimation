@@ -137,6 +137,12 @@ class Pose3D {
                 "r_hip", "r_knee", "r_ank", "l_hip", "l_knee", "l_ank",
                 "r_eye", "l_eye", "r_ear", "l_ear"
             };
+            float t = (float)((float)(cloud_transformed_->points.size()) / (float)(img_msg->width * img_msg->height));
+            RCLCPP_INFO(nd_->get_logger(), "width: %d", img_msg->width);
+            RCLCPP_INFO(nd_->get_logger(), "height: %d", img_msg->height);
+            RCLCPP_INFO(nd_->get_logger(), "img_size: %d", img_msg->width * img_msg->height);
+            RCLCPP_INFO(nd_->get_logger(), "pcl_size: %ld", cloud_transformed_->points.size());
+            RCLCPP_INFO(nd_->get_logger(), "t: %f", t);
 
             // Human ID
             for (size_t human_id = 0; human_id < pose_2d_array.data.size(); human_id++) {
@@ -222,7 +228,7 @@ class Pose3D {
 
                     // Get the 3D Pose(x,y,z) from each 2D Pose(x,y) body part by refering to the Point Cloud
                     if (!(point_x < 0 || point_y < 0)) {
-                        PointT transform_coords = cloud_transformed_->points[point_y * img_msg->width + point_x];
+                        PointT transform_coords = cloud_transformed_->points[(int)((point_y * img_msg->width + point_x) * t)];
                         if (std::isnan(transform_coords.x) || std::isnan(transform_coords.y) || std::isnan(transform_coords.z)) {
                             continue;
                         }
@@ -411,6 +417,7 @@ class Pose3D {
 
 
             base_frame_name_ = nd_->get_parameter("base_frame_name").as_string();
+            pose_2d_topic_name_ = "/human_pose_2d/pose_array";
             cloud_topic_name_ = nd_->get_parameter("cloud_topic_name").as_string();
             image_topic_name_ = nd_->get_parameter("image_topic_name").as_string();
 
@@ -420,7 +427,7 @@ class Pose3D {
             pose_3d_log_show_ = nd_->get_parameter("pose_3d_log_show").as_bool();
 
             std::cout << "human_pose_3d[base_frame_name]: " << base_frame_name_ << std::endl;
-            // std::cout << "human_pose_3d[pose_2d_topic_name]: " << pose_2d_topic_name_ << std::endl;
+            std::cout << "human_pose_3d[pose_2d_topic_name]: " << pose_2d_topic_name_ << std::endl;
             std::cout << "human_pose_3d[cloud_topic_name]: " << cloud_topic_name_ << std::endl;
             std::cout << "human_pose_3d[image_topic_name]: " << image_topic_name_ << std::endl;
             // std::cout << "human_pose_3d[camera_info_topic_name]: " << camera_info_topic_name_ << std::endl;
@@ -460,6 +467,7 @@ int main(int argc, char **argv) {
     rclcpp::init(argc, argv);
     rclcpp::Node::SharedPtr nd = std::make_shared<rclcpp::Node>("human_pose_3d");
     auto pose_3d = std::make_shared<Pose3D>(nd);
+    // rclcpp::spin(nd);
     rclcpp::executors::SingleThreadedExecutor exec;
     exec.add_node(nd);
     exec.spin();

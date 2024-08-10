@@ -1,8 +1,8 @@
 <launch>
     <!-- Camera RBG Image Raw topic -->
-    <arg name ="image_topic_name" default="/camera/rgb/camera_info"/>
+    <arg name ="image_topic_name" default="/camera/camera/color/image_raw"/>
     <!-- Select the cloud topic name -->
-    <arg name ="cloud_topic_name"       default="/camera/depth/points"/>
+    <arg name ="cloud_topic_name"       default="/camera/camera/depth/color/points"/>
     <!-- Select the camera base frame -->
     <arg name ="base_frame_name"        default="camera_link"/>
 
@@ -18,7 +18,7 @@
     <!-- Enable 3D Pose detection (true) -->
     <arg name ="pose_3d_detect"         default="true"/>
     <!-- Publish 3D Pose result as topic (true) -->
-    <arg name ="pose_3d_topic_pub"      default="false"/>
+    <arg name ="pose_3d_topic_pub"      default="true"/>
     <!-- Broadcast 3D Pose result as TF (true) -->
     <arg name ="pose_3d_tf_pub"         default="true"/>
     <!-- Show 3D Pose result as log in terminal (true) -->
@@ -26,7 +26,7 @@
 
     <arg name ="checkpoint_path"        default="$(find-pkg-share lightweight_human_pose_estimation)/models/checkpoint_iter_370000.pth"/>
     <arg name ="height_size"            default="256"/>
-    <arg name ="cpu"                    default="true"/>
+    <arg name ="cpu"                    default="false"/>
     <arg name ="track"                  default="true"/>
     <arg name ="smooth"                 default="true"/>
 
