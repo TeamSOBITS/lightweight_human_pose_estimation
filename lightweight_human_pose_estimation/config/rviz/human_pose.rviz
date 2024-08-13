@@ -6,8 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1
-        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 731
   - Class: rviz_common/Selection
@@ -27,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Visualization Manager:
   Class: ""
   Displays:
@@ -54,13 +52,88 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        base_footprint:
+          Value: true
+        camera_color_frame:
+          Value: false
+        camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: false
+        camera_link:
+          Value: true
+        person_0_l_ear:
+          Value: true
+        person_0_l_elb:
+          Value: true
+        person_0_l_eye:
+          Value: true
+        person_0_l_hip:
+          Value: true
+        person_0_l_sho:
+          Value: true
+        person_0_l_wri:
+          Value: true
+        person_0_neck:
+          Value: true
+        person_0_nose:
+          Value: true
+        person_0_r_ear:
+          Value: true
+        person_0_r_elb:
+          Value: true
+        person_0_r_eye:
+          Value: true
+        person_0_r_hip:
+          Value: true
+        person_0_r_sho:
+          Value: true
+        person_0_r_wri:
+          Value: true
       Marker Scale: 1
       Name: TF
-      Show Arrows: true
+      Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        base_footprint:
+          camera_link:
+            camera_color_frame:
+              camera_color_optical_frame:
+                {}
+            camera_depth_frame:
+              camera_depth_optical_frame:
+                {}
+          person_0_l_ear:
+            {}
+          person_0_l_elb:
+            {}
+          person_0_l_eye:
+            {}
+          person_0_l_hip:
+            {}
+          person_0_l_sho:
+            {}
+          person_0_l_wri:
+            {}
+          person_0_neck:
+            {}
+          person_0_nose:
+            {}
+          person_0_r_ear:
+            {}
+          person_0_r_elb:
+            {}
+          person_0_r_eye:
+            {}
+          person_0_r_hip:
+            {}
+          person_0_r_sho:
+            {}
+          person_0_r_wri:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -177,25 +250,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.3536674976348877
+      Distance: 2.800779104232788
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.33961814641952515
-        Y: -0.26549196243286133
-        Z: 0.19787514209747314
+        X: 0.48390981554985046
+        Y: -0.0031021093018352985
+        Z: 0.9013580679893494
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.18520265817642212
+      Pitch: 0.9252021312713623
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.985404133796692
+      Yaw: 3.120408296585083
     Saved: ~
 Window Geometry:
   Displays:
