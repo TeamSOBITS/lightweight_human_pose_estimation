@@ -1,7 +1,6 @@
 <launch>
     <!-- Camera RBG Image Raw topic -->
-    <!-- <arg name ="image_topic_name" default="/camera/camera/color/image_raw"/> -->
-    <arg name ="image_topic_name" default="/camera/camera/color/image_rect_raw"/>
+    <arg name ="image_topic_name" default="/camera/camera/color/image_raw"/>
     <!-- Select the cloud topic name -->
     <arg name ="cloud_topic_name"       default="/camera/camera/depth/color/points"/>
     <!-- Select the camera base frame -->
