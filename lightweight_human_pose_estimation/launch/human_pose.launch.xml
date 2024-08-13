@@ -1,10 +1,11 @@
 <launch>
     <!-- Camera RBG Image Raw topic -->
-    <arg name ="image_topic_name" default="/camera/camera/color/image_raw"/>
+    <!-- <arg name ="image_topic_name" default="/camera/camera/color/image_raw"/> -->
+    <arg name ="image_topic_name" default="/camera/camera/color/image_rect_raw"/>
     <!-- Select the cloud topic name -->
     <arg name ="cloud_topic_name"       default="/camera/camera/depth/color/points"/>
     <!-- Select the camera base frame -->
-    <arg name ="base_frame_name"        default="camera_link"/>
+    <arg name ="base_frame_name"        default="base_footprint"/>
 
     <!-- Enable 2D Pose detection (true) -->
     <arg name ="pose_2d_detect"         default="true"/>
@@ -29,6 +30,7 @@
     <arg name ="cpu"                    default="false"/>
     <arg name ="track"                  default="true"/>
     <arg name ="smooth"                 default="true"/>
+    <arg name ="rviz"                   default="true"/>
 
     <node pkg = "lightweight_human_pose_estimation" exec="human_pose_2d.py" output="screen">
         <param name="checkpoint_path"   value="$(var checkpoint_path)"/>
@@ -55,4 +57,7 @@
         <param name="pose_3d_tf_pub"    value="$(var pose_3d_tf_pub)"/>
         <param name="pose_3d_log_show"  value="$(var pose_3d_log_show)"/>
     </node>
+
+	<arg name="rviz_cfg"                default="$(find-pkg-share lightweight_human_pose_estimation)/config/rviz/human_pose.rviz"/>
+	<node if="$(var rviz)" pkg="rviz2" exec="rviz2" args="-d $(var rviz_cfg)"/>
 </launch>

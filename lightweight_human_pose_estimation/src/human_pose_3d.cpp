@@ -137,12 +137,6 @@ class Pose3D {
                 "r_hip", "r_knee", "r_ank", "l_hip", "l_knee", "l_ank",
                 "r_eye", "l_eye", "r_ear", "l_ear"
             };
-            float t = (float)((float)(cloud_transformed_->points.size()) / (float)(img_msg->width * img_msg->height));
-            RCLCPP_INFO(nd_->get_logger(), "width: %d", img_msg->width);
-            RCLCPP_INFO(nd_->get_logger(), "height: %d", img_msg->height);
-            RCLCPP_INFO(nd_->get_logger(), "img_size: %d", img_msg->width * img_msg->height);
-            RCLCPP_INFO(nd_->get_logger(), "pcl_size: %ld", cloud_transformed_->points.size());
-            RCLCPP_INFO(nd_->get_logger(), "t: %f", t);
 
             // Human ID
             for (size_t human_id = 0; human_id < pose_2d_array.data.size(); human_id++) {
@@ -228,7 +222,7 @@ class Pose3D {
 
                     // Get the 3D Pose(x,y,z) from each 2D Pose(x,y) body part by refering to the Point Cloud
                     if (!(point_x < 0 || point_y < 0)) {
-                        PointT transform_coords = cloud_transformed_->points[(int)((point_y * img_msg->width + point_x) * t)];
+                        PointT transform_coords = cloud_transformed_->points[point_y * img_msg->width + point_x];
                         if (std::isnan(transform_coords.x) || std::isnan(transform_coords.y) || std::isnan(transform_coords.z)) {
                             continue;
                         }
