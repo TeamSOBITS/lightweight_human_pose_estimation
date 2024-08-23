@@ -130,7 +130,6 @@ class Flame(Node) :
     """
     def run_ctrl_server(self, request, response):
         self.pose_2d_detect = request.request
-        response.success = True
         return response
     
     """
