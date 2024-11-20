@@ -14,7 +14,7 @@
 #include "lightweight_human_pose_estimation_msgs/msg/key_point2_d_array.hpp"
 #include "lightweight_human_pose_estimation_msgs/msg/key_point3_d.hpp"
 #include "lightweight_human_pose_estimation_msgs/msg/key_point3_d_array.hpp"
-#include "sobits_msgs/srv/run_ctrl.hpp"
+#include "sobits_interfaces/srv/run_ctrl.hpp"
 
 // #include <cv_bridge/cv_bridge.h>
 
@@ -58,7 +58,7 @@ class Pose3D {
         PointCloud::Ptr cloud_transformed_;
 
         rclcpp::Publisher<lightweight_human_pose_estimation_msgs::msg::KeyPoint3DArray>::SharedPtr pub_result_3d_array_;
-        rclcpp::Service<sobits_msgs::srv::RunCtrl>::SharedPtr srv_subscriber_switch_;
+        rclcpp::Service<sobits_interfaces::srv::RunCtrl>::SharedPtr srv_subscriber_switch_;
         // rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr sub_camera_info_;
         // ros::Publisher     pub_result_3d_array_;
         // ros::ServiceServer srv_subscriber_switch_;
@@ -70,8 +70,8 @@ class Pose3D {
         std::shared_ptr<message_filters::Synchronizer<KeyPointSPointSyncPolicy>>                         sync_;
 
 
-        void callbackSubscriberSwitch(const std::shared_ptr<sobits_msgs::srv::RunCtrl::Request> req, std::shared_ptr<sobits_msgs::srv::RunCtrl::Response> res) {
-        // bool callbackSubscriberSwitch( sobits_msgs::RunCtrl::Request &req, sobits_msgs::RunCtrl::Response &res ) {
+        void callbackSubscriberSwitch(const std::shared_ptr<sobits_interfaces::srv::RunCtrl::Request> req, std::shared_ptr<sobits_interfaces::srv::RunCtrl::Response> res) {
+        // bool callbackSubscriberSwitch( sobits_interfaces::RunCtrl::Request &req, sobits_interfaces::RunCtrl::Response &res ) {
             pose_3d_detect_ = req->request;
             res->response = true;
         }
@@ -433,7 +433,7 @@ class Pose3D {
 
             // ROS publishers and subscribers
             pub_result_3d_array_ = nd_->create_publisher<lightweight_human_pose_estimation_msgs::msg::KeyPoint3DArray>("pose_array", 10);
-            nd_->create_service<sobits_msgs::srv::RunCtrl>("run_ctr", std::bind(&Pose3D::callbackSubscriberSwitch, this, std::placeholders::_1, std::placeholders::_2));
+            nd_->create_service<sobits_interfaces::srv::RunCtrl>("run_ctr", std::bind(&Pose3D::callbackSubscriberSwitch, this, std::placeholders::_1, std::placeholders::_2));
             // sub_camera_info_ = nd_->create_subscription<sensor_msgs::msg::CameraInfo>(camera_info_topic_name_, 1, &Pose3D::callbackCameraInfo);
             // pub_result_3d_array_ = nh_.advertise<lightweight_human_pose_estimation_msgs::msg::KeyPoint3DArray>("pose_array", 10);
             // srv_subscriber_switch_ = nh_.advertiseService( "run_ctr", &Pose3D::callbackSubscriberSwitch, this);

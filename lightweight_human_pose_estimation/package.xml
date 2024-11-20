@@ -23,7 +23,7 @@
   <build_depend>pcl_ros</build_depend>
   <build_depend>tf2</build_depend>
   <build_depend>tf2_ros</build_depend>
-  <build_depend>sobits_msgs</build_depend>
+  <build_depend>sobits_interfaces</build_depend>
   <build_depend>lightweight_human_pose_estimation_msgs</build_depend>
 
   <!-- Execution dependencies -->
@@ -39,7 +39,7 @@
   <exec_depend>pcl_ros</exec_depend>
   <exec_depend>tf2</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>sobits_msgs</exec_depend>
+  <exec_depend>sobits_interfaces</exec_depend>
   <exec_depend>lightweight_human_pose_estimation_msgs</exec_depend>
 
   <!-- Member of group -->

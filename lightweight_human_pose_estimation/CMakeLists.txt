@@ -6,7 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
-find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
+find_package(OpenCV 4.5.4 REQUIRED PATHS "/opt/opencv/opencv_4.5.4/")
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -21,13 +21,13 @@ find_package(pcl_ros REQUIRED)
 find_package(rosidl_typesupport_cpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(lightweight_human_pose_estimation_msgs REQUIRED)
-find_package(sobits_msgs REQUIRED)
+find_package(sobits_interfaces REQUIRED)
 
 
 #--- for C++
 include_directories(include)
 add_executable(human_pose_3d src/human_pose_3d.cpp)
-ament_target_dependencies(human_pose_3d rclcpp std_msgs geometry_msgs sensor_msgs pcl_conversions pcl_ros tf2_ros cv_bridge lightweight_human_pose_estimation_msgs sobits_msgs rosidl_default_runtime)
+ament_target_dependencies(human_pose_3d rclcpp std_msgs geometry_msgs sensor_msgs pcl_conversions pcl_ros tf2_ros cv_bridge lightweight_human_pose_estimation_msgs sobits_interfaces rosidl_default_runtime)
 
 install(TARGETS
   human_pose_3d

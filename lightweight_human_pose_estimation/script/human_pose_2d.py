@@ -6,7 +6,7 @@ from geometry_msgs.msg import Point #3D空間でのポイントを表す
 from sensor_msgs.msg import Image # 画像データを表す
 from std_msgs.msg import Bool # ブール値
 from cv_bridge import CvBridge # ROSのImageメッセージとOpenCVのcv::Mat型を相互変換するためのライブラリ
-from sobits_msgs.srv import RunCtrl # サービス通信のため
+from sobits_interfaces.srv import RunCtrl # サービス通信のため
 from lightweight_human_pose_estimation_msgs.msg import KeyPoint2D #検出された2Dの関節点情報を表す
 from lightweight_human_pose_estimation_msgs.msg import KeyPoint2DArray #検出された2Dの関節点情報を表す
 
