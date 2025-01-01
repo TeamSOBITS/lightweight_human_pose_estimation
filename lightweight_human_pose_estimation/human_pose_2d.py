@@ -5,9 +5,6 @@ from sensor_msgs.msg import Image # 画像データを表す
 from std_msgs.msg import Bool # ブール値
 from cv_bridge import CvBridge # ROSのImageメッセージとOpenCVのcv::Mat型を相互変換するためのライブラリ
 
-# from sobits_interfaces.srv import RunCtrl
-# from lightweight_human_pose_estimation_msgs.msg import KeyPoint2D
-# from lightweight_human_pose_estimation_msgs.msg import KeyPoint2DArray
 from std_srvs.srv import SetBool
 from sobits_interfaces.msg import KeyPoint
 from sobits_interfaces.msg import KeyPointArray
@@ -105,12 +102,13 @@ class Flame(Node) :
         self.sub_img = self.create_subscription(Image, self.sub_img_topic_name, self.img_cb, 10)
 
         # Start Run_control Service
-        self.server = self.create_service(RunCtrl, '/human_pose_2d/run_ctr', self.run_ctrl_server)
+        self.server = self.create_service(SetBool, 'run_ctr', self.run_ctrl_server)
 
 
-    # RunCtrl Server→ROS2化
+    # SetBool : Process control
     def run_ctrl_server(self, request, response):
-        self.pose_2d_detect = request.request
+        self.pose_2d_detect = request.data
+        response.success = True
         return response
 
     def img_cb(self, msg):
