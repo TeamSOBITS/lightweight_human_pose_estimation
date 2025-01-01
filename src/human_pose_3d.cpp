@@ -112,12 +112,15 @@ class Pose3D {
 
 			// Check if there is any keypoint
             lightweight_human_pose_estimation::KeyPoint2DArray pose_2d_array = *pose_2d_array_msg;
-            if (pose_2d_array.data.size() == 0) {
-                ROS_ERROR("[Human Pose 3D] No human was detected. Skipping the 3D Pose estimation");
-                return;
-            }
+            // if (pose_2d_array.data.size() == 0) {
+            //     ROS_ERROR("[Human Pose 3D] No human was detected. Skipping the 3D Pose estimation");
+            //     return;
+            // }
 
             lightweight_human_pose_estimation::KeyPoint3DArray pose_3d_array;
+            pose_3d_array.header = pose_2d_array.header;
+            pose_3d_array.data.clear();
+
             lightweight_human_pose_estimation::KeyPoint3D pose_3d;
             std::string body_part_list[18] = {
                 "nose", "neck",
@@ -342,7 +345,6 @@ class Pose3D {
                 pose_3d.name = pose_2d_array.data[human_id].name;
                 pose_3d.confidence = pose_2d_array.data[human_id].confidence;
 
-                pose_3d_array.header = pose_2d_array.header;
                 pose_3d_array.data.push_back(pose_3d);
 
                 // Show the 3D Pose data

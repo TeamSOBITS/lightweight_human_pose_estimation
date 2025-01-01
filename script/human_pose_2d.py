@@ -122,6 +122,7 @@ class Flame :
         
         current_poses = []
         keypoints_msg = KeyPoint2DArray()
+        keypoints_msg.header = msg.header
 
         for n in range(len(pose_entries)):
             if len(pose_entries[n]) == 0:
@@ -160,7 +161,6 @@ class Flame :
             keypoint_msg.r_ear  = Point(pose_keypoints_list[16][0], pose_keypoints_list[16][1], -1)
             keypoint_msg.l_ear  = Point(pose_keypoints_list[17][0], pose_keypoints_list[17][1], -1)
 
-            keypoints_msg.header = msg.header
             keypoints_msg.data.append(keypoint_msg)
 
         if self.log_show_flag:
