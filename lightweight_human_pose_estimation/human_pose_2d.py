@@ -2,7 +2,6 @@ import rclpy
 from rclpy.node import Node #ROS2でのノード作成．
 from geometry_msgs.msg import Point #3D空間でのポイントを表す
 from sensor_msgs.msg import Image # 画像データを表す
-from std_msgs.msg import Bool # ブール値
 from cv_bridge import CvBridge # ROSのImageメッセージとOpenCVのcv::Mat型を相互変換するためのライブラリ
 
 from std_srvs.srv import SetBool
