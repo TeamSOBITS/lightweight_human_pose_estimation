@@ -16,7 +16,8 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription, LaunchContext
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
@@ -28,8 +29,16 @@ def generate_launch_description():
     input_image_topic_cmd = DeclareLaunchArgument(
         "input_image_topic",
         description="ROS Topic Name of sensor_msgs/msg/Image message",
-        default_value="/camera/camera/color/image_raw",   ## realsense
-        # default_value="/rgb/image_raw",                   ## azure_kinect
+        # default_value="/camera/camera/color/image_raw",   ## realsense
+        default_value="/rgb/image_raw",                   ## azure_kinect
+    )
+
+    point_cloud_topic = LaunchConfiguration("point_cloud_topic")
+    point_cloud_topic_cmd = DeclareLaunchArgument(
+        "point_cloud_topic",
+        description="ROS Topic Name of sensor_msgs/msg/PointCloud2 message",
+        # default_value="/camera/camera/depth/color/points",   ## realsense
+        default_value="/points2",                            ## azure_kinect
     )
 
     weight_file = LaunchConfiguration("weight_file")
@@ -66,7 +75,7 @@ def generate_launch_description():
 
     smooth = LaunchConfiguration("smooth")
     smooth_cmd = DeclareLaunchArgument(
-        "image_show",
+        "smooth",
         default_value="True",
         description="smoother flag",
     )
@@ -74,7 +83,7 @@ def generate_launch_description():
     image_show = LaunchConfiguration("image_show")
     image_show_cmd = DeclareLaunchArgument(
         "image_show",
-        default_value="False",
+        default_value="True",
         description="image show flag",
     )
 
@@ -112,13 +121,33 @@ def generate_launch_description():
 
     use_3d = LaunchConfiguration("use_3d")
     use_3d_cmd = DeclareLaunchArgument(
-        "use_3d", default_value="False", description="Whether to activate 3D detections"
+        "use_3d", default_value="True", description="Whether to activate 3D detections"
+    )
+
+    human_pose_3d_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("image_to_position"),
+                "launch",
+                "keypoint_to_3d.launch.py",
+            )
+        ),
+        launch_arguments={
+            "namespace": namespace,
+            "base_frame_name": "camera_base",
+            "keypoints_topic_name": "/human_pose/pose_array",
+            "cloud_topic_name": point_cloud_topic,
+            "img_topic_name": input_image_topic,
+            "execute_default": init_detection,
+        }.items(),
+        condition=IfCondition(use_3d),  # use_3dがTrueのときのみ実行
     )
 
     return LaunchDescription(
         [
             use_3d_cmd,
             input_image_topic_cmd,
+            point_cloud_topic_cmd,
             weight_file_cmd,
             init_detection_cmd,
             height_size_cmd,
@@ -128,5 +157,6 @@ def generate_launch_description():
             image_show_cmd,
             namespace_cmd,
             human_pose_2d_cmd,
+            human_pose_3d_cmd,
         ]
     )

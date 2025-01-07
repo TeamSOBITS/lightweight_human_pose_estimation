@@ -8,8 +8,8 @@ from pycocotools.cocoeval import COCOeval
 
 import torch
 
-from datasets.coco import CocoValDataset
-from models.with_mobilenet import PoseEstimationWithMobileNet
+from modules.datasets_coco import CocoValDataset
+from modules.model_with_mobilenet import PoseEstimationWithMobileNet
 from modules.keypoints import extract_keypoints, group_keypoints
 from modules.load_state import load_state
 

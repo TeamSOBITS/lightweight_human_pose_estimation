@@ -96,7 +96,7 @@ class Flame(Node) :
             rclpy.shutdown()
 
         # ROS2 Publisher and Subscriber
-        self.pub_result_array = self.create_publisher(KeyPoint2DArray, 'pose_array', 1)
+        self.pub_result_array = self.create_publisher(KeyPointArray, 'pose_array', 1)
         self.pub_result_img = self.create_publisher(Image, 'pose_img', 1)
         self.sub_img = self.create_subscription(Image, self.sub_img_topic_name, self.img_cb, 10)
 
