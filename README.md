@@ -99,9 +99,9 @@
 
 | System  | Version |
 | --- | --- |
-| Ubuntu  | 20.04 (Focal Fossa) |
-| ROS     | Noetic Ninjemys |
-| Python  | 3.8 |
+| Ubuntu  | 22.04 (Focal Fossa) |
+| ROS     | Humble |
+| Python  | 3.10 |
 | OpenCV  | 4.9.0 |
 | PyTorch | >=0.4.1 (Tested on: 2.2.1) |
 
@@ -117,11 +117,11 @@
     ```
 2. 本レポジトリをcloneします．
     ```sh
-    $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch
+    $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation
     ```
 3. レポジトリの中へ移動します．
     ```sh
-    $ cd lightweight_human_pose_estimation_pytorch/
+    $ cd lightweight_human_pose_estimation/
     ```
 4. 依存パッケージをインストールします．
     ```sh
@@ -130,8 +130,8 @@
 5. パッケージをコンパイルします．
     ```sh
     $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
-    $ catkin_make
+    # もしくは，"cd ~/colcon_ws/"へ移動．
+    $ colcon_build
     ```
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
@@ -184,7 +184,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 ### 骨格検出の起動
 
-1. 骨格検出関係の機能に応じて[human_pose.launch](launch/human_pose.launch)に修正する．
+1. 骨格検出関係の機能に応じて[human_pose.launch.py](launch/human_pose.launch)に修正する．
     ``` xml
     <!-- Camera RBG Image Raw topic -->
     <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
@@ -219,7 +219,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 2. launchファイルを実行する．
     ```bash
-    roslaunch lightweight_human_pose_estimation human_pose.launch
+    ros2 launch lightweight_human_pose_estimation human_pose.launch.py
     ```
 
 ### Subscribers & Publishers
