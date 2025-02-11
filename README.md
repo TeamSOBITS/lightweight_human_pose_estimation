@@ -184,7 +184,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 ### 骨格検出の起動
 
-1. 骨格検出関係の機能に応じて[human_pose.launch.py](launch/human_pose.launch)に修正する．
+1. 骨格検出関係の機能に応じて[human_pose.launch.py](launch/human_pose.launch.py)に修正する．
     ``` xml
     <!-- Camera RBG Image Raw topic -->
     <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
@@ -229,16 +229,16 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 | トピック名 | 型 | 意味 |
 | --- | --- | --- |
 | /camera/rgb/image_raw     | sensor_msgs/Image                                 | センサの画像 |
-| /camera/depth/points      | sensor_msgs/PointCloud2                           | センサの点群 |
-| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2次元の骨格情報 |
+| /points2      | sensor_msgs/PointCloud2                           | センサの点群 |
+| /human_pose/pose_array | sobits_interfaces/msg/KeyPointArray | 2次元の骨格情報 |
 
 - Publishers:
 
 | トピック名 | 型 | 意味 |
 | --- | --- | --- |
-| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2次元の骨格情報 |
-| /human_pose_2d/pose_img   | sensor_msgs/Image                                 | 2次元の骨格画像 |
-| /human_pose_3d/pose_array | lightweight_human_pose_estimation/KeyPoints_3d    | 3次元の骨格情報 |
+| /human_pose/pose_array | sobits_interfaces/msg/KeyPointArray | 2次元の骨格情報 |
+| /human_pose/pose_img   | sensor_msgs/msg/Image                                 | 2次元の骨格画像 |
+| /human_pose/keypoint_3d_array | sobits_interfaces/msg/KeyPointArray    | 3次元の骨格情報 |
 
 
 ### Services
@@ -324,7 +324,7 @@ COCOで事前に訓練されたモデルは，[checkpoint_iter_370000.pth](https
 Pythonデモは，簡単な結果のプレビューのために提供しています．
 最高のパフォーマンスを得るには，c++デモをご検討ください．ウェブカメラからpythonデモを実行する．
 ```bash
-$ cd lightweight-human-pose-estimation/script
+$ cd lightweight_human_pose_estimation/script
 $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --video 0
 ```
 </details>
