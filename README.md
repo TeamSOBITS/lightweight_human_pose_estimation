@@ -112,7 +112,7 @@
 1. ROSの`src`フォルダに移動します．
     ```sh
     $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
+    # もしくは，"cd ~/colcon_ws/"へ移動．
     $ cd src/
     ```
 2. 本レポジトリをcloneします．
