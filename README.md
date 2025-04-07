@@ -99,9 +99,9 @@
 
 | System  | Version |
 | --- | --- |
-| Ubuntu  | 20.04 (Focal Fossa) |
-| ROS     | Noetic Ninjemys |
-| Python  | 3.8 |
+| Ubuntu  | 22.04 (Focal Fossa) |
+| ROS     | Humble |
+| Python  | 3.10 |
 | OpenCV  | 4.9.0 |
 | PyTorch | >=0.4.1 (Tested on: 2.2.1) |
 
@@ -112,16 +112,16 @@
 1. ROSの`src`フォルダに移動します．
     ```sh
     $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
+    # もしくは，"cd ~/colcon_ws/"へ移動．
     $ cd src/
     ```
 2. 本レポジトリをcloneします．
     ```sh
-    $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation_pytorch
+    $ git clone https://github.com/TeamSOBITS/lightweight_human_pose_estimation
     ```
 3. レポジトリの中へ移動します．
     ```sh
-    $ cd lightweight_human_pose_estimation_pytorch/
+    $ cd lightweight_human_pose_estimation/
     ```
 4. 依存パッケージをインストールします．
     ```sh
@@ -130,8 +130,8 @@
 5. パッケージをコンパイルします．
     ```sh
     $ roscd
-    # もしくは，"cd ~/catkin_ws/"へ移動．
-    $ catkin_make
+    # もしくは，"cd ~/colcon_ws/"へ移動．
+    $ colcon_build
     ```
 
 <p align="right">(<a href="#readme-top">上に戻る</a>)</p>
@@ -184,7 +184,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 ### 骨格検出の起動
 
-1. 骨格検出関係の機能に応じて[human_pose.launch](launch/human_pose.launch)に修正する．
+1. 骨格検出関係の機能に応じて[human_pose.launch.py](launch/human_pose.launch.py)に修正する．
     ``` xml
     <!-- Camera RBG Image Raw topic -->
     <arg name ="input_image_topic"      default="/camera/rgb/image_raw"/>
@@ -219,7 +219,7 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 
 2. launchファイルを実行する．
     ```bash
-    roslaunch lightweight_human_pose_estimation human_pose.launch
+    ros2 launch lightweight_human_pose_estimation human_pose.launch.py
     ```
 
 ### Subscribers & Publishers
@@ -229,16 +229,16 @@ $ sudo chmod o+w /dev/bus/usb/001/002
 | トピック名 | 型 | 意味 |
 | --- | --- | --- |
 | /camera/rgb/image_raw     | sensor_msgs/Image                                 | センサの画像 |
-| /camera/depth/points      | sensor_msgs/PointCloud2                           | センサの点群 |
-| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2次元の骨格情報 |
+| /points2      | sensor_msgs/PointCloud2                           | センサの点群 |
+| /human_pose/pose_array | sobits_interfaces/msg/KeyPointArray | 2次元の骨格情報 |
 
 - Publishers:
 
 | トピック名 | 型 | 意味 |
 | --- | --- | --- |
-| /human_pose_2d/pose_array | lightweight_human_pose_estimation/KeyPoint2DArray | 2次元の骨格情報 |
-| /human_pose_2d/pose_img   | sensor_msgs/Image                                 | 2次元の骨格画像 |
-| /human_pose_3d/pose_array | lightweight_human_pose_estimation/KeyPoints_3d    | 3次元の骨格情報 |
+| /human_pose/pose_array | sobits_interfaces/msg/KeyPointArray | 2次元の骨格情報 |
+| /human_pose/pose_img   | sensor_msgs/msg/Image                                 | 2次元の骨格画像 |
+| /human_pose/keypoint_3d_array | sobits_interfaces/msg/KeyPointArray    | 3次元の骨格情報 |
 
 
 ### Services
@@ -324,7 +324,7 @@ COCOで事前に訓練されたモデルは，[checkpoint_iter_370000.pth](https
 Pythonデモは，簡単な結果のプレビューのために提供しています．
 最高のパフォーマンスを得るには，c++デモをご検討ください．ウェブカメラからpythonデモを実行する．
 ```bash
-$ cd lightweight-human-pose-estimation/script
+$ cd lightweight_human_pose_estimation/script
 $ python3 demo.py --checkpoint-path checkpoints/checkpoint_iter_370000.pth --video 0
 ```
 </details>
