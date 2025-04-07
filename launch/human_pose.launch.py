@@ -29,16 +29,18 @@ def generate_launch_description():
     input_image_topic_cmd = DeclareLaunchArgument(
         "input_image_topic",
         description="ROS Topic Name of sensor_msgs/msg/Image message",
-        # default_value="/camera/camera/color/image_raw",   ## realsense
-        default_value="/rgb/image_raw",                   ## azure_kinect
+        default_value="/camera/camera/color/image_raw",   ## realsense
+        # default_value="/rgb/image_raw",                   ## azure_kinect
+        # default_value="/camera/color/image_raw",          ## orbbec_series
     )
 
     point_cloud_topic = LaunchConfiguration("point_cloud_topic")
     point_cloud_topic_cmd = DeclareLaunchArgument(
         "point_cloud_topic",
         description="ROS Topic Name of sensor_msgs/msg/PointCloud2 message",
-        # default_value="/camera/camera/depth/color/points",   ## realsense
-        default_value="/points2",                            ## azure_kinect
+        default_value="/camera/camera/depth/color/points",   ## realsense
+        # default_value="/points2",                            ## azure_kinect
+        # default_value="/camera/depth_registered/points",     ## orbbec_series
     )
 
     weight_file = LaunchConfiguration("weight_file")
@@ -134,11 +136,12 @@ def generate_launch_description():
         ),
         launch_arguments={
             "namespace": namespace,
-            "base_frame_name": "camera_base",
+            "base_frame_name": "base_footprint",
             "keypoints_topic_name": "/human_pose/pose_array",
             "cloud_topic_name": point_cloud_topic,
             "img_topic_name": input_image_topic,
             "execute_default": init_detection,
+            "enable_id": "False",
         }.items(),
         condition=IfCondition(use_3d),  # use_3dがTrueのときのみ実行
     )

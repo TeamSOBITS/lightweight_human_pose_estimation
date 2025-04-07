@@ -1,21 +1,18 @@
+import cv2 #OpenCVのPython
+from cv_bridge import CvBridge # ROSのImageメッセージとOpenCVのcv::Mat型を相互変換するためのライブラリ
+import numpy as np #数値計算に使用
+
 import rclpy
 from rclpy.node import Node #ROS2でのノード作成．
 from geometry_msgs.msg import Point #3D空間でのポイントを表す
 from sensor_msgs.msg import Image # 画像データを表す
-from cv_bridge import CvBridge # ROSのImageメッセージとOpenCVのcv::Mat型を相互変換するためのライブラリ
 
 from std_srvs.srv import SetBool
 from sobits_interfaces.msg import KeyPoint
 from sobits_interfaces.msg import KeyPointArray
 
-import cv2 #OpenCVのPython
-import numpy as np #数値計算に使用
 import torch #ディープラーニングモデルの実行に使用
 
-# import os
-# import sys
-# import getpass
-# sys.path.append(os.path.join("/home/" + str(getpass.getuser()) + "/colcon_ws/src/lightweight_human_pose_estimation/lightweight_human_pose_estimation/script"))
 from modules.model_with_mobilenet import PoseEstimationWithMobileNet #MobileNetを使用したポーズ推定モデル
 from modules.keypoints import extract_keypoints, group_keypoints #関節点の抽出とグループ化に関する関数
 from modules.load_state import load_state #モデルの状態をロードするための関数
@@ -99,6 +96,7 @@ class Flame(Node) :
         self.pub_result_array = self.create_publisher(KeyPointArray, 'pose_array', 1)
         self.pub_result_img = self.create_publisher(Image, 'pose_img', 1)
         self.sub_img = self.create_subscription(Image, self.sub_img_topic_name, self.img_cb, 10)
+        self.cv_bridge = CvBridge()
 
         # Start Run_control Service
         self.server = self.create_service(SetBool, 'run_ctr', self.run_ctrl_server)
@@ -114,9 +112,24 @@ class Flame(Node) :
 
         if not self.pose_2d_detect:
             return
-        
-        orig_img = img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
-        heatmaps, pafs, scale, pad = infer_fast(self.net, img, self.height_size, self.stride, self.upsample_ratio, self.cpu)
+
+        encoding = msg.encoding
+        cv_image = self.cv_bridge.imgmsg_to_cv2(msg)
+        show_image = self.cv_bridge.imgmsg_to_cv2(msg, "bgr8")
+
+        if encoding == 'bgr8':
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        elif encoding == 'bgra8':
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGRA2RGB)
+            show_image = cv2.cvtColor(cv_image, cv2.COLOR_BGRA2BGR)
+        elif encoding == 'rgba8':
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGBA2RGB)
+            show_image = cv2.cvtColor(cv_image, cv2.COLOR_RGBA2BGR)
+        elif encoding != 'rgb8':
+            self.get_logger().error(f"Unsupported encoding: {encoding}")
+            return
+
+        heatmaps, pafs, scale, pad = infer_fast(self.net, cv_image, self.height_size, self.stride, self.upsample_ratio, self.cpu)
 
         total_keypoints_num = 0
         all_keypoints_by_type = []
@@ -168,31 +181,19 @@ class Flame(Node) :
             self.previous_poses = current_poses
 
         for pose in current_poses:
-            pose.draw(img)
-        img = cv2.addWeighted(orig_img, 0.6, img, 0.4, 0)
-        for pose in current_poses:
-            cv2.rectangle(img, (pose.bbox[0], pose.bbox[1]),
+            pose.draw(show_image)
+            cv2.rectangle(show_image, (pose.bbox[0], pose.bbox[1]),
                         (pose.bbox[0] + pose.bbox[2], pose.bbox[1] + pose.bbox[3]), (0, 255, 0))
             if self.track:
-                cv2.putText(img, 'id: {}'.format(pose.id), (pose.bbox[0], pose.bbox[1] - 16),
+                cv2.putText(show_image, 'id: {}'.format(pose.id), (pose.bbox[0], pose.bbox[1] - 16),
                             cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255))
-        result_img_msg = CvBridge().cv2_to_imgmsg(img, "bgr8")
+        result_img_msg = self.cv_bridge.cv2_to_imgmsg(show_image, "bgr8")
         result_img_msg.header = msg.header
         
 
         if self.img_show_flag:
-            cv2.imshow('Lightweight Human Pose Estimation', img)
+            cv2.imshow('Lightweight Human Pose Estimation', show_image)
             key = cv2.waitKey(self.delay)
-            # if key == 27:  # esc
-            #     self.get_logger().info("Key [ESC] pressed to leave") #ESCキーが押されたことをログに記録
-            #     self.destroy_node() #現在のノードを破棄
-            #     rclpy.shutdown()
-            #     return
-            # elif key == 112:  # 'p'
-            #     if self.delay == 1:
-            #         self.delay = 0
-            #     else:
-            #         self.delay = 1
 
         self.pub_result_img.publish(result_img_msg)
         self.pub_result_array.publish(keypoints_msg)

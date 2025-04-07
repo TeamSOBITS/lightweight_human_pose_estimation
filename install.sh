@@ -6,6 +6,15 @@ echo "╔══╣ Install: Lightweight Human Pose Estimation (STARTING) ╠═�
 # Keep track of the current directory
 CRT_DIR=$(pwd)
 
+cd ..
+git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/sobits_msgs.git
+cd sobits_msgs/
+bash install.sh
+cd ..
+git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/bbox_to_tf.git
+cd bbox_to_tf/
+bash install.sh
+cd ..
 
 # Clone required packages
 cd ..
@@ -13,9 +22,7 @@ git clone -b feature/humble-devel https://github.com/TeamSOBITS/sobits_msgs
 
 sudo apt-get update
 sudo apt-get install -y \
-    v4l-utils
-
-sudo apt-get install -y \
+    v4l-utils\
     ros-${ROS_DISTRO}-cv-bridge \
     ros-${ROS_DISTRO}-geometry-msgs \
     ros-${ROS_DISTRO}-message-filters \
@@ -28,14 +35,16 @@ sudo apt-get install -y \
     ros-${ROS_DISTRO}-std-msgs \
     ros-${ROS_DISTRO}-pluginlib \
     ros-${ROS_DISTRO}-sensor-msgs \
-    ros-${ROS_DISTRO}-std-msgs
-
-sudo apt-get install -y \
+    ros-${ROS_DISTRO}-std-msgs \
     ros-${ROS_DISTRO}-v4l2-camera \
     ros-${ROS_DISTRO}-camera-calibration \
     ros-${ROS_DISTRO}-image-transport \
     ros-${ROS_DISTRO}-image-common \
     ros-${ROS_DISTRO}-image-proc
+
+pip3 uninstall opencv-python
+pip3 install opencv-python-headless
+pip3 install opencv-python
 
 python3 -m pip install -U pip
 python3 -m pip install \
