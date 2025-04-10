@@ -11,14 +11,11 @@ git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/sobits_msgs.git
 cd sobits_msgs/
 bash install.sh
 cd ..
+git clone -b feature/bbox_msg https://github.com/TeamSOBITS/bbox_to_tf.git
 git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/bbox_to_tf.git
 cd bbox_to_tf/
 bash install.sh
 cd ..
-
-# Clone required packages
-cd ..
-git clone -b feature/humble-devel https://github.com/TeamSOBITS/sobits_msgs
 
 sudo apt-get update
 sudo apt-get install -y \
