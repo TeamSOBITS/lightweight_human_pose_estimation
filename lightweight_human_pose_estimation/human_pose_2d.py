@@ -55,7 +55,7 @@ class Flame(Node) :
 
         self.declare_parameter("input_image_topic", "image_raw")
         self.declare_parameter("weight_file", "checkpoint_iter_370000.pth")
-        self.declare_parameter('init_detection', True)
+        self.declare_parameter('execute_default', True)
         self.declare_parameter("height_size", 256)
         self.declare_parameter("only_cpu", True)
         self.declare_parameter("track", True)
@@ -65,7 +65,7 @@ class Flame(Node) :
 
         self.sub_img_topic_name = self.get_parameter("input_image_topic").get_parameter_value().string_value
         self.checkpoint_path = self.get_parameter("weight_file").get_parameter_value().string_value
-        self.pose_2d_detect = self.get_parameter("init_detection").get_parameter_value().bool_value
+        self.pose_2d_detect = self.get_parameter("execute_default").get_parameter_value().bool_value
         self.height_size = self.get_parameter("height_size").get_parameter_value().integer_value
         self.cpu = self.get_parameter("only_cpu").get_parameter_value().bool_value
         self.track = self.get_parameter("track").get_parameter_value().bool_value
