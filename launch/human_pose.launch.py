@@ -14,47 +14,47 @@ def generate_launch_description():
     input_image_topic_cmd = DeclareLaunchArgument(
         "input_image_topic",
         description="ROS Topic Name of sensor_msgs/msg/Image message. (sensor_msgs/msg/Image)",
-        default_value="/camera/camera/color/image_raw",   ## realsense
+        # default_value="/camera/color/image_raw",            ## realsense
         # default_value="/rgb/image_raw",                   ## azure_kinect ##
         # default_value="/camera/color/image_raw",          ## orbbec_series ##
-        # default_value="/camera/rgb/image_raw",            ## xtion
+        default_value="/camera/rgb/image_raw",            ## xtion
     )
 
     point_cloud_topic = LaunchConfiguration("point_cloud_topic")
     point_cloud_topic_cmd = DeclareLaunchArgument(
         "point_cloud_topic",
         description="Detection 3D Pose from 2D Pose (sensor_msgs/msg/PointCloud2). if you select the 'point_cloud' in 'positioning_detection_mode'.",
-        default_value="/camera/camera/depth/color/points",   ## realsense
+        # default_value="/camera/depth/color/points",            ## realsense
         # default_value="/points2",                            ## azure_kinect ##
         # default_value="/camera/depth_registered/points",     ## orbbec_series ##
-        # default_value="/camera/depth_registered/points",     ## xtion
+        default_value="/camera/depth_registered/points",     ## xtion
     )
 
     depth_image_topic_name = LaunchConfiguration("depth_image_topic_name")
     depth_image_topic_name_cmd = DeclareLaunchArgument(
         "depth_image_topic_name",
         description="Detection 3D Pose from 2D Pose (sensor_msgs/msg/Image). if you select the 'depth_image' in 'positioning_detection_mode'.",
-        default_value="/camera/camera/depth/image_rect_raw", ## realsense
+        # default_value="/camera/depth/image_rect_raw", ## realsense
         # default_value="", ## azure_kinect ##
         # default_value="", ## orbbec_series ##
-        # default_value="/camera/depth/image_raw", ## xtion
+        default_value="/camera/depth/image_raw",    ## xtion
     )
 
     info_topic_name = LaunchConfiguration("info_topic_name")
     info_topic_name_cmd = DeclareLaunchArgument(
         "info_topic_name",
         description="Setup the camera info topic name. (sensor_msgs/msg/CameraInfo)",
-        default_value="/camera/camera/color/camera_info", ## realsense
+        # default_value="/camera/color/camera_info", ## realsense
         # default_value="", ## azure_kinect ##
         # default_value="", ## orbbec_series ##
-        # default_value="/camera/rgb/camera_info", ## xtion
+        default_value="/camera/rgb/camera_info", ## xtion
     )
 
     positioning_detection_mode = LaunchConfiguration("positioning_detection_mode")
     positioning_detection_mode_cmd = DeclareLaunchArgument(
         "positioning_detection_mode",
-        description="Choose of ['point_cloud', 'depth_image']",
-        default_value="depth_image",
+        description="Select the 3D Pose Detection mode. Choose of ['point_cloud', 'depth_image']",
+        default_value="point_cloud",
     )
 
     weight_file = LaunchConfiguration("weight_file")
