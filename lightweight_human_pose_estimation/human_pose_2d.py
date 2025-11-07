@@ -4,6 +4,7 @@ import numpy as np #数値計算に使用
 
 import rclpy
 from rclpy.node import Node #ROS2でのノード作成．
+from rclpy.qos import QoSProfile, QoSHistoryPolicy, QoSDurabilityPolicy, QoSReliabilityPolicy
 from geometry_msgs.msg import Point #3D空間でのポイントを表す
 from sensor_msgs.msg import Image # 画像データを表す
 
@@ -92,10 +93,16 @@ class Flame(Node) :
             self.destroy_node()
             rclpy.shutdown()
 
+        self.image_qos_profile = QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            durability=QoSDurabilityPolicy.VOLATILE,
+            depth=1,
+        )
         # ROS2 Publisher and Subscriber
         self.pub_result_array = self.create_publisher(KeyPointArray, 'pose_array', 1)
         self.pub_result_img = self.create_publisher(Image, 'pose_img', 1)
-        self.sub_img = self.create_subscription(Image, self.sub_img_topic_name, self.img_cb, 10)
+        self.sub_img = self.create_subscription(Image, self.sub_img_topic_name, self.img_cb, self.image_qos_profile)
         self.cv_bridge = CvBridge()
 
         # Start Run_control Service
