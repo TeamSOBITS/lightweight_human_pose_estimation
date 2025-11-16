@@ -7,11 +7,6 @@ echo "╔══╣ Install: Lightweight Human Pose Estimation (STARTING) ╠═�
 CRT_DIR=$(pwd)
 
 cd ..
-git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/sobits_msgs.git
-cd sobits_msgs/
-bash install.sh
-cd ..
-git clone -b feature/bbox_msg https://github.com/TeamSOBITS/bbox_to_tf.git
 git clone -b ${ROS_DISTRO}-devel https://github.com/TeamSOBITS/bbox_to_tf.git
 cd bbox_to_tf/
 bash install.sh
@@ -39,17 +34,19 @@ sudo apt-get install -y \
     ros-${ROS_DISTRO}-image-common \
     ros-${ROS_DISTRO}-image-proc
 
-pip3 uninstall opencv-python
+pip3 uninstall opencv-python -y
 pip3 install opencv-python-headless
 pip3 install opencv-python
 
 python3 -m pip install -U pip
 python3 -m pip install \
     pycocotools \
-    numpy
+    "numpy<2"
 
 cd lightweight_human_pose_estimation/weights/
-wget https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth
+if [ ! -e "checkpoint_iter_370000.pth" ]; then
+  wget https://download.01.org/opencv/openvino_training_extensions/models/human_pose_estimation/checkpoint_iter_370000.pth
+fi
 cd ..
 
 # # Setting `lubuvc_camera` permission
