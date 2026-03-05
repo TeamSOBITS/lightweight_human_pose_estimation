@@ -34,12 +34,12 @@ sudo apt-get install -y \
     ros-${ROS_DISTRO}-image-common \
     ros-${ROS_DISTRO}-image-proc
 
-pip3 uninstall opencv-python -y
-pip3 install opencv-python-headless
-pip3 install opencv-python
+pip3 uninstall opencv-python -y --break-system-packages
+pip3 install opencv-python-headless --break-system-packages
+pip3 install opencv-python --break-system-packages
 
-python3 -m pip install -U pip
-python3 -m pip install \
+python3 -m pip install -U pip --break-system-packages
+python3 -m pip install --break-system-packages \
     pycocotools \
     "numpy<2"
 

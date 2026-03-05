@@ -14,10 +14,12 @@ def generate_launch_description():
     input_image_topic_cmd = DeclareLaunchArgument(
         "input_image_topic",
         description="ROS Topic Name of sensor_msgs/msg/Image message. (sensor_msgs/msg/Image)",
-        # default_value="/camera/color/image_raw",            ## realsense
-        default_value="/rgb/image_raw",                   ## azure_kinect
+        # default_value="/camera/color/image_raw",          ## realsense
+        # default_value="/rgb/image_raw",                   ## azure_kinect
         # default_value="/camera/color/image_raw",          ## orbbec_series ##
         # default_value="/camera/rgb/image_raw",            ## xtion
+        default_value="/sobit_edu/head_camera/rgb/image_raw",
+
     )
 
     point_cloud_topic = LaunchConfiguration("point_cloud_topic")
@@ -25,9 +27,10 @@ def generate_launch_description():
         "point_cloud_topic",
         description="Detection 3D Pose from 2D Pose (sensor_msgs/msg/PointCloud2). if you select the 'point_cloud' in 'positioning_detection_mode'.",
         # default_value="/camera/depth/color/points",            ## realsense
-        default_value="/points2",                            ## azure_kinect
+        # default_value="/points2",                            ## azure_kinect
         # default_value="/camera/depth_registered/points",     ## orbbec_series ##
         # default_value="/camera/depth_registered/points",     ## xtion
+        default_value="/sobit_edu/head_camera/depth_registered/points",
     )
 
     depth_image_topic_name = LaunchConfiguration("depth_image_topic_name")
@@ -35,9 +38,10 @@ def generate_launch_description():
         "depth_image_topic_name",
         description="Detection 3D Pose from 2D Pose (sensor_msgs/msg/Image). if you select the 'depth_image' in 'positioning_detection_mode'.",
         # default_value="/camera/depth/image_rect_raw", ## realsense
-        default_value="/depth_to_rgb/image_raw", ## azure_kinect
-        # default_value="", ## orbbec_series ##
+        # default_value="/depth_to_rgb/image_raw",    ## azure_kinect
+        # default_value="",                           ## orbbec_series
         # default_value="/camera/depth/image_raw",    ## xtion
+        default_value="/sobit_edu/head_camera/depth_registered/image_raw",
     )
 
     info_topic_name = LaunchConfiguration("info_topic_name")
@@ -45,9 +49,10 @@ def generate_launch_description():
         "info_topic_name",
         description="Setup the camera info topic name. (sensor_msgs/msg/CameraInfo)",
         # default_value="/camera/color/camera_info", ## realsense
-        default_value="/rgb/camera_info", ## azure_kinect
+        # default_value="/rgb/camera_info", ## azure_kinect
         # default_value="", ## orbbec_series ##
         # default_value="/camera/rgb/camera_info", ## xtion
+        default_value="/sobit_edu/head_camera/rgb/camera_info",
     )
 
     positioning_detection_mode = LaunchConfiguration("positioning_detection_mode")
@@ -66,7 +71,8 @@ def generate_launch_description():
     base_frame_name = LaunchConfiguration("base_frame_name")
     base_frame_name_cmd = DeclareLaunchArgument(
         "base_frame_name", description="Base frame name for the node. (String)",
-        default_value="base_footprint",
+        # default_value="base_footprint",
+        default_value="sobit_edu/base_footprint",
     )
 
     enable_id = LaunchConfiguration("enable_id")
@@ -90,7 +96,7 @@ def generate_launch_description():
     only_cpu = LaunchConfiguration("only_cpu")
     only_cpu_cmd = DeclareLaunchArgument(
         "only_cpu",
-        default_value="False",
+        default_value="True",
         description="only CPU : True, use GPU : False",
     )
 
